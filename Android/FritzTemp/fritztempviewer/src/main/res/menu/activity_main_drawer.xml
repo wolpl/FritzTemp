@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group
+        android:id="@+id/nav_group_charts"
+        android:checkableBehavior="single"
+        android:enabled="true"
+        android:visible="true">
+        <item
+            android:id="@+id/nav_raw_chart"
+            android:checked="true"
+            android:title="@string/raw_chart" />
+        <item
+            android:id="@+id/nav_min_max_chart"
+            android:title="@string/min_max_chart" />
+    </group>
+</menu>

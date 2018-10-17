@@ -1,0 +1,47 @@
+apply plugin: 'kotlin-kapt'
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+android {
+    compileSdkVersion 28
+    defaultConfig {
+        applicationId "de.wpaul.fritztemp"
+        minSdkVersion 27
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    packagingOptions {
+        exclude 'META-INF/INDEX.LIST'
+        exclude 'META-INF/io.netty.versions.properties'
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test:runner:1.1.0-beta02'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-beta02'
+    compileOnly 'com.google.android.things:androidthings:1.0'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'com.squareup.okhttp3:okhttp:3.7.0'
+    implementation "io.ktor:ktor-server-netty:$ktor_version"
+    implementation 'org.slf4j:slf4j-android:1.7.25'
+    implementation "io.ktor:ktor-jackson:$ktor_version"
+    implementation 'com.beust:klaxon:3.0.1'
+    implementation project(path: ':fritztempcommons')
+}
+
+kotlin {
+    experimental {
+        coroutines "enable"
+    }
+}
