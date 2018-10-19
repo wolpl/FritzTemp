@@ -9,7 +9,7 @@ import java.util.*
 @Entity(tableName = "measurements")
 data class Measurement(
         @ColumnInfo(name = "temperature") val temperature: Float,
-        @ColumnInfo(name = "timestamp") val date: Date = Calendar.getInstance().time,
+        @ColumnInfo(name = "timestamp", index = true) val date: Date = Calendar.getInstance().time,
         @ColumnInfo(name = "sensor") val sensor: String? = null,
         @PrimaryKey(autoGenerate = true) var id: Int? = null
 ) {
