@@ -1,7 +1,6 @@
 package de.wpaul.fritztemp
 
 import com.fasterxml.jackson.databind.SerializationFeature
-import de.wpaul.fritztempcommons.runAsyncAction
 import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.features.ContentNegotiation
@@ -19,6 +18,7 @@ import io.ktor.routing.routing
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import io.ktor.server.netty.NettyApplicationEngine
+import kotlinx.coroutines.experimental.launch
 import java.util.*
 
 class Server(private val logger: TemperatureLogger) {
@@ -90,7 +90,7 @@ class Server(private val logger: TemperatureLogger) {
                 get("{...}") { call.respond(HttpStatusCode.NotFound) }
             }
         }
-        runAsyncAction {
+        launch {
             server.start(true)
         }
     }

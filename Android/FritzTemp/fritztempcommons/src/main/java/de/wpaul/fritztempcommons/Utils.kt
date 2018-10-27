@@ -1,17 +1,6 @@
 package de.wpaul.fritztempcommons
 
-import android.os.AsyncTask
 import java.util.*
-
-fun runAsyncAction(action: () -> Unit): AsyncTask<Void, Void, Void?>? {
-    return object : AsyncTask<Void, Void, Void?>() {
-        override fun doInBackground(vararg params: Void?): Void? {
-            action()
-            return null
-        }
-    }.execute()
-}
-
 
 fun getXmlValue(document: String, tag: String): String = document.split("<$tag>")[1].split("</$tag>")[0]
 
