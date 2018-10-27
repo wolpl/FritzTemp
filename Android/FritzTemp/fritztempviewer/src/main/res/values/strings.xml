@@ -13,4 +13,8 @@
     <string name="min_max_chart">Min/Max Chart</string>
     <string name="additional_info">Additional Info</string>
     <string name="refresh_charts">Refresh Charts</string>
+    <string name="sensor">Sensor</string>
+    <string name="interval">Interval</string>
+    <string name="reset">Reset</string>
+    <string name="config">Config</string>
 </resources>

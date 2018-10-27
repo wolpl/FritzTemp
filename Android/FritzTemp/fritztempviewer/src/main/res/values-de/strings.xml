@@ -11,4 +11,8 @@
     <string name="min_max_chart">Min/Max-Diagramm</string>
     <string name="additional_info">Zusätzliche Informationen</string>
     <string name="refresh_charts">Diagramme neu laden</string>
+    <string name="sensor">Sensor</string>
+    <string name="interval">Intervall</string>
+    <string name="reset">Zurücksetzen</string>
+    <string name="config">Konfiguration</string>
 </resources>

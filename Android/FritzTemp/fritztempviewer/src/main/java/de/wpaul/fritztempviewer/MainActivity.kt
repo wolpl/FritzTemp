@@ -97,6 +97,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 //if (fragment_container.targetFragment !is ChartMinMaxFragment)
                 setContentFragment(ChartMinMaxFragment())
             }
+            R.id.nav_config -> {
+                setContentFragment(ConfigFragment())
+            }
         }
 
         drawer_layout.closeDrawer(GravityCompat.START)

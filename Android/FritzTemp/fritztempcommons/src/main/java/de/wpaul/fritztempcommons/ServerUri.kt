@@ -1,17 +1,17 @@
 package de.wpaul.fritztempcommons
 
-class ServerUri(uri: String) {
-    val minimized: String
+class ServerUri(base: String, private val suffix: String = "") {
+    val minimizedBase: String
 
     init {
-        var min = uri
+        var min = base
         if (min.startsWith("https://")) min = min.drop(8)
         if (min.startsWith("http://")) min = min.drop(7)
         min = min.split(":")[0]
-        minimized = min
+        minimizedBase = min
     }
 
     val full: String
-        get() = "http://$minimized:8080"
+        get() = "http://$minimizedBase:8080$suffix"
 
 }

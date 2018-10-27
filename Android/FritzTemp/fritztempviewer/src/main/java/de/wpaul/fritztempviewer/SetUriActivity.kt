@@ -27,7 +27,7 @@ class SetUriActivity : AppCompatActivity() {
     }
 
     fun onSaveButtonClick(v: View) {
-        App.instance.loggerClient.uri = ServerUri(UriEditText.text.toString()).minimized
+        App.instance.loggerClient.uri = ServerUri(UriEditText.text.toString()).minimizedBase
         startActivity(Intent(this, MainActivity::class.java))
     }
 
