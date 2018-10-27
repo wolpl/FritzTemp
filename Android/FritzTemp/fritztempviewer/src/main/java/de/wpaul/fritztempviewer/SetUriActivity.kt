@@ -6,8 +6,10 @@ import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import de.wpaul.fritztempcommons.ServerUri
-import de.wpaul.fritztempcommons.runAsyncAction
 import kotlinx.android.synthetic.main.activity_set_uri.*
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.experimental.withContext
 
 class SetUriActivity : AppCompatActivity() {
 
@@ -33,10 +35,10 @@ class SetUriActivity : AppCompatActivity() {
 
     private fun testUri(uriString: String) {
         val uri = ServerUri(uriString)
-        runAsyncAction {
+        launch {
             try {
                 val response = App.instance.loggerClient.getStatusRaw(uri.full)
-                runOnUiThread {
+                withContext(UI) {
                     currentValueView.text = response
                 }
             } catch (e: Exception) {

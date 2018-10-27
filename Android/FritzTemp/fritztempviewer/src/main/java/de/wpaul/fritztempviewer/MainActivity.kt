@@ -10,9 +10,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.transaction
 import com.google.android.material.navigation.NavigationView
-import de.wpaul.fritztempcommons.runAsyncAction
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
+import kotlinx.coroutines.experimental.launch
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onResume() {
         super.onResume()
-        runAsyncAction {
+        launch {
             val status = App.instance.loggerClient.getStatus()
             val fileSize = status.logFileSize.toLong() / 1000.0
             val entries = status.logEntries.toInt()
@@ -76,7 +76,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 true
             }
             R.id.action_refresh_charts -> {
-                runAsyncAction {
+                launch {
                     App.instance.loggerClient.fetchAndParseLog()
                     //TODO: refresh charts
                 }

@@ -10,8 +10,10 @@ import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter
 import com.jjoe64.graphview.series.DataPoint
 import com.jjoe64.graphview.series.LineGraphSeries
 import de.wpaul.fritztempcommons.plus
-import de.wpaul.fritztempcommons.runAsyncAction
 import kotlinx.android.synthetic.main.fragment_chart_min_max.*
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.experimental.withContext
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -26,17 +28,17 @@ class ChartMinMaxFragment : androidx.fragment.app.Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        runAsyncAction {
+        launch {
             val data = App.instance.loggerClient.getMinMaxAverageAnalysis()
             val minSeries: LineGraphSeries<DataPoint> = LineGraphSeries(data.map { DataPoint(it.day, it.min.toDouble()) }.toTypedArray())
             val maxSeries: LineGraphSeries<DataPoint> = LineGraphSeries(data.map { DataPoint(it.day, it.max.toDouble()) }.toTypedArray())
             val avgSeries: LineGraphSeries<DataPoint> = LineGraphSeries(data.map { DataPoint(it.day, it.avg.toDouble()) }.toTypedArray())
 
-            minSeries.color = ContextCompat.getColor(context!!, R.color.colorTempMin)
-            maxSeries.color = ContextCompat.getColor(context!!, R.color.colorTempMax)
-            avgSeries.color = ContextCompat.getColor(context!!, R.color.colorTempAvg)
+            minSeries.color = ContextCompat.getColor(this@ChartMinMaxFragment.context!!, R.color.colorTempMin)
+            maxSeries.color = ContextCompat.getColor(this@ChartMinMaxFragment.context!!, R.color.colorTempMax)
+            avgSeries.color = ContextCompat.getColor(this@ChartMinMaxFragment.context!!, R.color.colorTempAvg)
 
-            activity?.runOnUiThread {
+            withContext(UI) {
                 with(graph_view) {
                     addSeries(minSeries)
                     addSeries(maxSeries)

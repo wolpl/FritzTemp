@@ -8,8 +8,8 @@ import android.widget.Toast
 import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter
 import com.jjoe64.graphview.series.DataPoint
 import com.jjoe64.graphview.series.LineGraphSeries
-import de.wpaul.fritztempcommons.runAsyncAction
 import kotlinx.android.synthetic.main.fragment_chart_raw.*
+import kotlinx.coroutines.experimental.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -25,7 +25,7 @@ class ChartRawFragment : androidx.fragment.app.Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        runAsyncAction {
+        launch {
             val dataPoints = App.instance.loggerClient.getLog().map { DataPoint(it.date, it.temperature.toDouble()) }.sortedBy { it.x }.toList().toTypedArray()
             activity?.runOnUiThread {
                 graphView.apply {
