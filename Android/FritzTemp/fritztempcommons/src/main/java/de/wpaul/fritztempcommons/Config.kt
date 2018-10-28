@@ -7,7 +7,7 @@ open class Config(sensor: String? = null, interval: Long = defaultInterval) {
         const val defaultInterval = 60000L
     }
 
-    @Json(name = "ain")
+    @Json(name = "sensor")
     var sensor = sensor
         set(value) {
             field = value
