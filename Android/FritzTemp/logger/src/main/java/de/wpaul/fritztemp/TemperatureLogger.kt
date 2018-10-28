@@ -2,12 +2,13 @@ package de.wpaul.fritztemp
 
 import android.util.Log
 import de.wpaul.fritztempcommons.Measurement
+import de.wpaul.fritztempcommons.MeasurementsDB
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
 
-class TemperatureLogger(val config: Config) {
+class TemperatureLogger(val config: Config, val db: MeasurementsDB) {
 
     companion object {
         const val TAG = "TemperatureLogger"
@@ -36,7 +37,7 @@ class TemperatureLogger(val config: Config) {
 
         logTask = executor.scheduleAtFixedRate({
             try {
-                config.logFile.appendText(Measurement(fritzSession.getTemperature(config.ain)).toString() + "\n")
+                db.measurementsDao().insert(Measurement(fritzSession.getTemperature(config.ain), sensor = config.ain))
             } catch (ex: Exception) {
                 Log.e(TAG, "Could not log new temperature!")
             }
@@ -44,6 +45,8 @@ class TemperatureLogger(val config: Config) {
     }
 
     fun deleteLog() {
-        config.logFile.delete()
+        db.measurementsDao().deleteAll()
     }
+
+    fun getLogCsvString(): String = db.measurementsDao().getAll().joinToString("\n") { it.toString() }
 }

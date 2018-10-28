@@ -1,9 +1,29 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    ext.kotlin_version = '1.2.71'
-    ext.ktor_version = '0.9.3'
-    ext.room_version = '2.0.0'
+    ext{
+        kotlin_version = '1.2.71'
+        ktor_version = '0.9.3'
+        room_version = '2.1.0-alpha01'
+        klaxon_version = '3.0.1'
+        okhttp_version= '3.10.0'
+
+        constraintLayoutVersion = '2.0.0-alpha2'
+        coreTestingVersion = '2.0.0'
+        espressoVersion = '3.1.0-alpha4'
+        glideVersion = '4.8.0'
+        gradleVersion = '3.2.1'
+        gsonVersion = '2.8.2'
+        junitVersion = '4.12'
+        ktlintVersion = '0.29.0'
+        ktxVersion = '1.0.0'
+        lifecycleVersion = '2.0.0'
+        navigationVersion = '1.0.0-alpha06'
+        runnerVersion = '1.0.1'
+        supportLibraryVersion = '1.0.0'
+        uiAutomatorVersion = '2.2.0-alpha4'
+        workVersion = '1.0.0-alpha10'
+    }
     repositories {
         google()
         jcenter()

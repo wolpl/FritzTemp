@@ -1,4 +1,4 @@
-apply plugin: 'kotlin-kapt'
+//apply plugin: 'kotlin-kapt'
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
@@ -27,16 +27,19 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.1.0-beta02'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-beta02'
+    testImplementation "junit:junit:$junitVersion"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espressoVersion"
     compileOnly 'com.google.android.things:androidthings:1.0'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'com.squareup.okhttp3:okhttp:3.7.0'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
     implementation "io.ktor:ktor-server-netty:$ktor_version"
-    implementation 'org.slf4j:slf4j-android:1.7.25'
     implementation "io.ktor:ktor-jackson:$ktor_version"
-    implementation 'com.beust:klaxon:3.0.1'
+    implementation "com.beust:klaxon:$klaxon_version"
+
+    implementation "androidx.room:room-runtime:$room_version"
+    kapt "androidx.room:room-compiler:$room_version" // use kapt for Kotlin
+    testImplementation "androidx.room:room-testing:$room_version"
+
     implementation project(path: ':fritztempcommons')
 }
 

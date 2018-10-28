@@ -16,7 +16,6 @@ import okhttp3.Request
 import okhttp3.RequestBody
 import java.io.File
 import java.net.URL
-import java.text.SimpleDateFormat
 import java.util.*
 
 class LoggerClient(context: Context) {
@@ -60,7 +59,7 @@ class LoggerClient(context: Context) {
 
     suspend fun fetchAndParseLog(uri: String? = this.uri) {
         val measurements = fetchString(uri, "/log").lines().asSequence().filter { !it.isEmpty() }
-                .map { Measurement(it.split(";")[1].toFloat(), SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.ROOT).parse(it.split(";")[0])) }
+                .map { Measurement.parse(it) }
         dbDao.insert(measurements.toList())
         fetchedLog = true
     }
@@ -85,4 +84,9 @@ class LoggerClient(context: Context) {
         val request = Request.Builder().url(ServerUri(uri!!, "/config/$key").full).put(body).build()
         return@async client.newCall(request).execute()
     }.await()
+
+    suspend fun refreshLog(uri: String? = this.uri) {
+        dbDao.deleteAll()
+        fetchAndParseLog(uri)
+    }
 }

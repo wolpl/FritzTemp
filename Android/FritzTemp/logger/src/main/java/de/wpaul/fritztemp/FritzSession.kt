@@ -51,7 +51,7 @@ class FritzSession {
         val request = Request.Builder().url(url).build()
         val response = client.newCall(request).execute()
         return when {
-            response.isSuccessful -> response.body().string()
+            response.isSuccessful -> response.body()!!.string()
             isFirstTry -> {
                 getSessionId()
                 httpGet(url, false)

@@ -6,7 +6,7 @@
     <string name="navigation_drawer_open">Navigation öffnen</string>
     <string name="navigation_drawer_close">Navigation schließen</string>
     <string name="action_settings">Einstellungen</string>
-    <string name="nav_header_additional_info">%.1f KB Log-Datei\n%d Einträge</string>
+    <string name="nav_header_additional_info">%d Einträge</string>
     <string name="raw_chart">Rohdaten-Diagramm</string>
     <string name="min_max_chart">Min/Max-Diagramm</string>
     <string name="additional_info">Zusätzliche Informationen</string>

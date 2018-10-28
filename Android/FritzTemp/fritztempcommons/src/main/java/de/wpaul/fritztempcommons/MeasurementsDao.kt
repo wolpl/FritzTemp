@@ -2,6 +2,7 @@ package de.wpaul.fritztempcommons
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import java.util.*
 
@@ -27,10 +28,10 @@ interface MeasurementsDao {
     @Query("select date(timestamp) as day,min(temperature)as min,max(temperature) as max,avg(temperature) as avg from measurements where timestamp>=:earliest group by date(timestamp) order by date(timestamp)")
     fun getMinMaxAverageTemperatureByDaySince(earliest: Date): List<MinMaxAvgTemperatureElement>
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(vararg m: Measurement)
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(ms: List<Measurement>)
 
     @Query("select count(*) from measurements")
