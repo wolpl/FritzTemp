@@ -48,5 +48,5 @@ dependencies {
     kapt "androidx.room:room-compiler:$room_version" // use kapt for Kotlin
     testImplementation "androidx.room:room-testing:$room_version"
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:0.22.5'
-    implementation 'com.squareup.okhttp3:okhttp:3.10.0'
+    implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
 }

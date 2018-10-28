@@ -6,6 +6,7 @@ buildscript {
         ktor_version = '0.9.3'
         room_version = '2.1.0-alpha01'
         klaxon_version = '3.0.1'
+        okhttp_version= '3.10.0'
 
         constraintLayoutVersion = '2.0.0-alpha2'
         coreTestingVersion = '2.0.0'
