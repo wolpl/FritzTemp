@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.os.StrictMode
 import android.util.Log
 import com.google.android.things.device.TimeManager
+import de.wpaul.fritztempcommons.MeasurementsDB
 
 class MainActivity : Activity() {
 
@@ -26,10 +27,9 @@ class MainActivity : Activity() {
         TimeManager.getInstance().setAutoTimeEnabled(true)
 
         val config = Config(filesDir.absolutePath)
-        config.logPath = filesDir.absolutePath + "/TempLog.txt"
 
         //Start temperature logger
-        val tempLogger = TemperatureLogger(config)
+        val tempLogger = TemperatureLogger(config, MeasurementsDB.create(this, "Temperatures.db"))
         Log.i(TAG, "Started temperature logger")
 
         //Start server

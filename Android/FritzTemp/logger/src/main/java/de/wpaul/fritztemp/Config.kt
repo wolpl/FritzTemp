@@ -5,13 +5,12 @@ import com.beust.klaxon.Klaxon
 import de.wpaul.fritztempcommons.Event
 import java.io.File
 
-class Config(private val filesDir: String) {
+class Config(filesDir: String) {
 
     companion object {
         private const val TAG = "Config"
         private const val AIN = "ain"
         private const val INTERVAL = "interval"
-        private const val LOGPATH = "logPath"
     }
 
     private val confFile = File("$filesDir/config.json")
@@ -26,7 +25,6 @@ class Config(private val filesDir: String) {
 
     init {
         val defaultMap = mutableMapOf(
-                LOGPATH to "$filesDir/TempLog.txt",
                 INTERVAL to "10000",
                 AIN to "119600690696"
         )
@@ -37,7 +35,6 @@ class Config(private val filesDir: String) {
                 val res = Klaxon().parse<JsonHelper>(confFile)!!.map
                 require(res.containsKey(INTERVAL))
                 require(res.containsKey(AIN))
-                require(res.containsKey(LOGPATH))
                 res
             } catch (e: Exception) {
                 Log.e(TAG, "Error while reading config json", e)
@@ -80,15 +77,6 @@ class Config(private val filesDir: String) {
         set(it) {
             this[AIN] = it
         }
-
-    var logPath: String
-        get() = this[LOGPATH]!!
-        set(it) {
-            this[LOGPATH] = File(it).absolutePath
-        }
-
-    val logFile
-        get() = File(logPath)
 
     class JsonHelper(val map: MutableMap<String, String>)
 }

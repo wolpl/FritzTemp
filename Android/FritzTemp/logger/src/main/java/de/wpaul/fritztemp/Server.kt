@@ -9,7 +9,6 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.jackson.jackson
 import io.ktor.request.receiveText
 import io.ktor.response.respond
-import io.ktor.response.respondFile
 import io.ktor.response.respondText
 import io.ktor.routing.delete
 import io.ktor.routing.get
@@ -26,9 +25,7 @@ class Server(private val logger: TemperatureLogger) {
     private val status: Map<String, String>
         get() {
             return mapOf("running" to "OK",
-                    "log file" to logger.config.logPath,
-                    "log file size" to logger.config.logFile.length().toString(),
-                    "log entries" to logger.config.logFile.readLines().size.toString(),
+                    "log entries" to logger.db.measurementsDao().countAllDistinct().toString(),
                     "sensor ain" to logger.config.ain,
                     "log interval" to logger.config.interval.toString(),
                     "temperature" to logger.getTemperature().toString())
@@ -50,7 +47,7 @@ class Server(private val logger: TemperatureLogger) {
                 }
 
                 get("/log") {
-                    call.respondFile(logger.config.logFile)
+                    call.respond(logger.getLogCsvString())
                 }
                 delete("/log") {
                     logger.deleteLog()

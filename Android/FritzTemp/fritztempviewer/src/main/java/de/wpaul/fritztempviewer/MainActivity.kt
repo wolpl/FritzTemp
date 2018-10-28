@@ -38,11 +38,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         super.onResume()
         launch {
             val status = App.instance.loggerClient.getStatus()
-            val fileSize = status.logFileSize.toLong() / 1000.0
             val entries = status.logEntries.toInt()
             runOnUiThread {
                 val infoText = nav_view.getHeaderView(0).findViewById<TextView>(R.id.navHeaderMainAdditionalInfo)
-                infoText.text = getString(R.string.nav_header_additional_info).format(fileSize, entries)
+                infoText.text = getString(R.string.nav_header_additional_info).format(entries)
             }
         }
     }
@@ -77,7 +76,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
             R.id.action_refresh_charts -> {
                 launch {
-                    App.instance.loggerClient.fetchAndParseLog()
+                    App.instance.loggerClient.refreshLog()
                     //TODO: refresh charts
                 }
                 true
