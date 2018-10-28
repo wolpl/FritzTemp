@@ -1,6 +1,7 @@
 package de.wpaul.fritztemp
 
 import com.fasterxml.jackson.databind.SerializationFeature
+import de.wpaul.fritztempcommons.Measurement
 import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.features.ContentNegotiation
@@ -83,6 +84,11 @@ class Server(private val logger: TemperatureLogger) {
                         App.instance?.password = body[1]
                         call.respond(HttpStatusCode.OK)
                     }
+                }
+                put("/log") {
+                    val body = call.receiveText()
+                    logger.db.measurementsDao().insert(body.lines().map { line -> Measurement.parse(line) })
+                    call.respond(HttpStatusCode.OK)
                 }
                 get("{...}") { call.respond(HttpStatusCode.NotFound) }
             }
