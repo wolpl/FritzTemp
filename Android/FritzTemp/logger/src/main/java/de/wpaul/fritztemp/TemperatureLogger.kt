@@ -8,7 +8,7 @@ import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
 
-class TemperatureLogger(val config: Config, val db: MeasurementsDB) {
+class TemperatureLogger(val config: SharedPreferencesConfig, val db: MeasurementsDB) {
 
     companion object {
         const val TAG = "TemperatureLogger"
@@ -29,7 +29,7 @@ class TemperatureLogger(val config: Config, val db: MeasurementsDB) {
         resetInterval()
     }
 
-    fun getTemperature() = fritzSession.getTemperature(config.ain)
+    fun getTemperature() = if (config.sensor != null) fritzSession.getTemperature(config.sensor!!) else null
 
     private fun resetInterval() {
         if (this::logTask.isInitialized)
@@ -37,7 +37,8 @@ class TemperatureLogger(val config: Config, val db: MeasurementsDB) {
 
         logTask = executor.scheduleAtFixedRate({
             try {
-                db.measurementsDao().insert(Measurement(fritzSession.getTemperature(config.ain), sensor = config.ain))
+                requireNotNull(config.sensor)
+                db.measurementsDao().insert(Measurement(fritzSession.getTemperature(config.sensor!!), sensor = config.sensor))
             } catch (ex: Exception) {
                 Log.e(TAG, "Could not log new temperature!")
             }

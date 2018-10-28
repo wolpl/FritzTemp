@@ -1,13 +1,12 @@
 package de.wpaul.fritztemp
 
-import com.fasterxml.jackson.databind.SerializationFeature
 import de.wpaul.fritztempcommons.Measurement
+import de.wpaul.fritztempcommons.Status
 import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.features.ContentNegotiation
 import io.ktor.features.StatusPages
 import io.ktor.http.HttpStatusCode
-import io.ktor.jackson.jackson
 import io.ktor.request.receiveText
 import io.ktor.response.respond
 import io.ktor.response.respondText
@@ -19,17 +18,15 @@ import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import io.ktor.server.netty.NettyApplicationEngine
 import kotlinx.coroutines.experimental.launch
+import toliner.kotatu.klaxon
 import java.util.*
 
 class Server(private val logger: TemperatureLogger) {
 
-    private val status: Map<String, String>
+    private val status: Status
         get() {
-            return mapOf("running" to "OK",
-                    "log entries" to logger.db.measurementsDao().countAllDistinct().toString(),
-                    "sensor ain" to logger.config.ain,
-                    "log interval" to logger.config.interval.toString(),
-                    "temperature" to logger.getTemperature().toString())
+            return Status("OK", logger.config.sensor
+                    ?: "", logger.config.interval, logger.db.measurementsDao().countAllDistinct(), logger.getTemperature().toString())
         }
     private val server: NettyApplicationEngine
 
@@ -37,9 +34,7 @@ class Server(private val logger: TemperatureLogger) {
         server = embeddedServer(Netty, port = 8080) {
             routing {
                 install(ContentNegotiation) {
-                    jackson {
-                        enable(SerializationFeature.INDENT_OUTPUT)
-                    }
+                    klaxon()
                 }
                 install(StatusPages) {
                     status(HttpStatusCode.NotFound) {
@@ -60,13 +55,13 @@ class Server(private val logger: TemperatureLogger) {
                 get("/date") {
                     call.respondText(Date().toString())
                 }
-                get("/config") { call.respond(logger.config.map) }
+                get("/config") { call.respond(logger.config) }
                 get("/config/{setting}") {
-                    call.respond(logger.config.map[call.parameters["setting"]]
+                    call.respond(logger.config[call.parameters["setting"]!!]
                             ?: HttpStatusCode.NotFound)
                 }
                 put("/config/{setting}") {
-                    if (logger.config.map.containsKey((call.parameters["setting"]))) {
+                    if (logger.config.hasProperty((call.parameters["setting"]!!))) {
                         try {
                             logger.config[call.parameters["setting"]!!] = call.receiveText()
                         } catch (e: Exception) {

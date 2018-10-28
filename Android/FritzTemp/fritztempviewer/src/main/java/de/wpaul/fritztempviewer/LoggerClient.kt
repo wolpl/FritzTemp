@@ -74,8 +74,8 @@ class LoggerClient(context: Context) {
 
     suspend fun setConfig(config: Config, uri: String? = this.uri) {
         withContext(CommonPool) {
-            setSingleConfig("interval", config.interval, uri)
-            setSingleConfig("ain", config.sensor, uri)
+            setSingleConfig("interval", config.interval.toString(), uri)
+            setSingleConfig("ain", config.sensor!!, uri)
         }
     }
 

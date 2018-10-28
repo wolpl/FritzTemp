@@ -36,7 +36,7 @@ class ConfigFragment : Fragment() {
             config = App.instance.loggerClient.getConfig()
         }
 
-        etInterval.setText(config.interval)
+        etInterval.setText(config.interval.toString())
         etSensor.setText(config.sensor)
     }
 
@@ -47,7 +47,7 @@ class ConfigFragment : Fragment() {
 
     private fun onBtnSaveClick() {
         config.sensor = etSensor.text.toString()
-        config.interval = etInterval.text.toString()
+        config.interval = etInterval.text.toString().toLong()
         launch(UI) {
             App.instance.loggerClient.setConfig(config)
             fetchConfig()

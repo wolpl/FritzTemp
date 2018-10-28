@@ -3,6 +3,7 @@ package de.wpaul.fritztemp
 import android.app.Activity
 import android.os.Bundle
 import android.os.StrictMode
+import android.preference.PreferenceManager.getDefaultSharedPreferences
 import android.util.Log
 import com.google.android.things.device.TimeManager
 import de.wpaul.fritztempcommons.MeasurementsDB
@@ -26,7 +27,7 @@ class MainActivity : Activity() {
         TimeManager.getInstance().setTimeFormat(TimeManager.FORMAT_24)
         TimeManager.getInstance().setAutoTimeEnabled(true)
 
-        val config = Config(filesDir.absolutePath)
+        val config = SharedPreferencesConfig(preferences = getDefaultSharedPreferences(this))
 
         //Start temperature logger
         val tempLogger = TemperatureLogger(config, MeasurementsDB.create(this, "Temperatures.db"))
