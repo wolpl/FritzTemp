@@ -15,4 +15,6 @@
     <string name="interval">Intervall</string>
     <string name="reset">Zurücksetzen</string>
     <string name="config">Konfiguration</string>
+    <string name="status">Status</string>
+    <string name="status_text">Temperatur: %.1f°C\nNiedrigste - höchste heute: %.1f°C - %.1f°C\n%d Datenbankeinträge\nÄltester Eintrag: %s\nNeuester Eintrag: %s</string>
 </resources>

@@ -14,6 +14,7 @@ data class Measurement(
         @PrimaryKey(autoGenerate = true) var id: Int? = null
 ) {
     override fun toString(): String = "${SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.ROOT).format(date)};$temperature"
+    fun getLocalString(): String = "${SimpleDateFormat().format(date)}: $temperature°C"
 
     companion object {
         fun parse(s: String) = Measurement(s.split(";")[1].toFloat(), SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.ROOT).parse(s.split(";")[0]))

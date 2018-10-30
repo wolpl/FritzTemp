@@ -2,6 +2,7 @@ package de.wpaul.fritztempviewer
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
@@ -16,6 +17,10 @@ import kotlinx.coroutines.experimental.launch
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
+    companion object {
+        val TAG = MainActivity::class.simpleName
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -25,7 +30,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
-        setContentFragment(ChartRawFragment())
+        setContentFragment(StatusFragment())
 
         nav_view.setNavigationItemSelectedListener(this)
 
@@ -88,6 +93,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         // Handle navigation view item clicks here.
         when (item.itemId) {
+            R.id.nav_status -> {
+                setContentFragment(StatusFragment())
+            }
             R.id.nav_raw_chart -> {
                 //if (fragment_container.targetFragment !is ChartRawFragment)
                 setContentFragment(ChartRawFragment())
@@ -99,6 +107,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_config -> {
                 setContentFragment(ConfigFragment())
             }
+            else -> Log.w(TAG, "Unknown navigation item selected: ${item.title}")
         }
 
         drawer_layout.closeDrawer(GravityCompat.START)

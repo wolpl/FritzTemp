@@ -17,4 +17,8 @@
     <string name="interval">Interval</string>
     <string name="reset">Reset</string>
     <string name="config">Config</string>
+    <string name="status">Status</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="status_text">Temperature: %.1f°C\nLowest - Highest today: %.1f°C - %.1f°C\n%d database entries\nOldest entry: %s\nYoungest entry: %s</string>
 </resources>

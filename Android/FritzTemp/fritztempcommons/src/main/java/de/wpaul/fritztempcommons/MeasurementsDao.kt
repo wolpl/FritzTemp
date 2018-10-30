@@ -24,6 +24,17 @@ interface MeasurementsDao {
     @Query("select * from measurements where timestamp >= :d order by timestamp")
     fun getAllAfterDate(d: Date): List<Measurement>
 
+    @Query("select min(temperature) from measurements where date(timestamp)=date(:day)")
+    fun getMinTempAtDay(day: Date): Float
+
+    @Query("select max(temperature) from measurements where date(timestamp)=date(:day)")
+    fun getMaxTempAtDay(day: Date): Float
+
+    @Query("select * from measurements where timestamp=(select min(timestamp) from measurements)")
+    fun getOldestEntry(): Measurement
+
+    @Query("select * from measurements where timestamp=(select max(timestamp) from measurements)")
+    fun getYoungestEntry(): Measurement
 
     @Query("select date(timestamp) as day,min(temperature)as min,max(temperature) as max,avg(temperature) as avg from measurements where timestamp>=:earliest group by date(timestamp) order by date(timestamp)")
     fun getMinMaxAverageTemperatureByDaySince(earliest: Date): List<MinMaxAvgTemperatureElement>

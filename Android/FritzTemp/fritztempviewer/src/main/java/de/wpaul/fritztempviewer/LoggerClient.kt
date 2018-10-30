@@ -21,7 +21,7 @@ import java.util.*
 class LoggerClient(context: Context) {
 
     private val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-    private val dbDao: MeasurementsDao
+    val dbDao: MeasurementsDao
     private var fetchedLog = false
     private val client = OkHttpClient()
 
