@@ -3,12 +3,13 @@ package de.wpaul.fritztemp
 import android.util.Log
 import de.wpaul.fritztempcommons.Measurement
 import de.wpaul.fritztempcommons.MeasurementsDB
+import java.io.File
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
 
-class TemperatureLogger(val config: SharedPreferencesConfig, val db: MeasurementsDB) {
+class TemperatureLogger(val config: SharedPreferencesConfig, val db: MeasurementsDB, val dbFile: File) {
 
     companion object {
         const val TAG = "TemperatureLogger"

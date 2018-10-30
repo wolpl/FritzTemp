@@ -30,7 +30,7 @@ class MainActivity : Activity() {
         val config = SharedPreferencesConfig(preferences = getDefaultSharedPreferences(this))
 
         //Start temperature logger
-        val tempLogger = TemperatureLogger(config, MeasurementsDB.create(this, "Temperatures.db"))
+        val tempLogger = TemperatureLogger(config, MeasurementsDB.create(this, "Temperatures.db"), getDatabasePath("Temperatures.db"))
         Log.i(TAG, "Started temperature logger")
 
         //Start server

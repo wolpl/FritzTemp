@@ -9,6 +9,7 @@ import io.ktor.features.StatusPages
 import io.ktor.http.HttpStatusCode
 import io.ktor.request.receiveText
 import io.ktor.response.respond
+import io.ktor.response.respondFile
 import io.ktor.response.respondText
 import io.ktor.routing.delete
 import io.ktor.routing.get
@@ -84,6 +85,9 @@ class Server(private val logger: TemperatureLogger) {
                     val body = call.receiveText()
                     logger.db.measurementsDao().insert(body.lines().map { line -> Measurement.parse(line) })
                     call.respond(HttpStatusCode.OK)
+                }
+                get("/database.sqlite") {
+                    call.respondFile(logger.dbFile)
                 }
                 get("{...}") { call.respond(HttpStatusCode.NotFound) }
             }
