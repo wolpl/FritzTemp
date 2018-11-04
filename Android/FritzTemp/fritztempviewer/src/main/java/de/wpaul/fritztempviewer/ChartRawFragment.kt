@@ -9,7 +9,10 @@ import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter
 import com.jjoe64.graphview.series.DataPoint
 import com.jjoe64.graphview.series.LineGraphSeries
 import kotlinx.android.synthetic.main.fragment_chart_raw.*
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -25,7 +28,7 @@ class ChartRawFragment : androidx.fragment.app.Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        launch {
+        GlobalScope.launch(Dispatchers.Default, CoroutineStart.DEFAULT) {
             val dataPoints = App.instance.loggerClient.getLog().map { DataPoint(it.date, it.temperature.toDouble()) }.sortedBy { it.x }.toList().toTypedArray()
             activity?.runOnUiThread {
                 graphView.apply {

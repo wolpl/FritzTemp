@@ -36,16 +36,11 @@ dependencies {
     implementation "io.ktor:ktor-jackson:$ktorVersion"
     implementation "com.beust:klaxon:$klaxonVersion"
     implementation 'com.github.toliner:Kotatu-ktor-klaxon:0.1.2'
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlinCoroutinesVersion"
 
     implementation "androidx.room:room-runtime:$roomVersion"
     kapt "androidx.room:room-compiler:$roomVersion" // use kapt for Kotlin
     testImplementation "androidx.room:room-testing:$roomVersion"
 
     implementation project(path: ':fritztempcommons')
-}
-
-kotlin {
-    experimental {
-        coroutines "enable"
-    }
 }

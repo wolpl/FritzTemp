@@ -7,9 +7,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import de.wpaul.fritztempcommons.ServerUri
 import kotlinx.android.synthetic.main.activity_set_uri.*
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.launch
-import kotlinx.coroutines.experimental.withContext
+import kotlinx.coroutines.*
 
 class SetUriActivity : AppCompatActivity() {
 
@@ -35,10 +33,10 @@ class SetUriActivity : AppCompatActivity() {
 
     private fun testUri(uriString: String) {
         val uri = ServerUri(uriString)
-        launch {
+        GlobalScope.launch(Dispatchers.Default, CoroutineStart.DEFAULT) {
             try {
                 val response = App.instance.loggerClient.getStatusRaw(uri.full)
-                withContext(UI) {
+                withContext(Dispatchers.Main) {
                     currentValueView.text = response
                 }
             } catch (e: Exception) {

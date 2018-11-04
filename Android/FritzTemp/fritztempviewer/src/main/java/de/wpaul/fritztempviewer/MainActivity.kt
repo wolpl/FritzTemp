@@ -13,7 +13,10 @@ import androidx.fragment.app.transaction
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -41,9 +44,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onResume() {
         super.onResume()
-        launch {
+        GlobalScope.launch(Dispatchers.Default, CoroutineStart.DEFAULT) {
             val status = App.instance.loggerClient.getStatus()
-            val entries = status.logEntries.toInt()
+            val entries = status.logEntries
             runOnUiThread {
                 val infoText = nav_view.getHeaderView(0).findViewById<TextView>(R.id.navHeaderMainAdditionalInfo)
                 infoText.text = getString(R.string.nav_header_additional_info).format(entries)
@@ -80,7 +83,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 true
             }
             R.id.action_refresh_charts -> {
-                launch {
+                GlobalScope.launch(Dispatchers.Default, CoroutineStart.DEFAULT) {
                     App.instance.loggerClient.refreshLog()
                     //TODO: refresh charts
                 }

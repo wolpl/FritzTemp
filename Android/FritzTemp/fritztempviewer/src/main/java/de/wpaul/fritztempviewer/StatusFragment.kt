@@ -6,9 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_status.*
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.launch
-import kotlinx.coroutines.experimental.withContext
+import kotlinx.coroutines.*
 import java.util.*
 
 class StatusFragment : Fragment() {
@@ -21,14 +19,14 @@ class StatusFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        launch {
+        GlobalScope.launch(Dispatchers.Default, CoroutineStart.DEFAULT) {
             App.instance.loggerClient.fetchAndParseLog()
             val status = App.instance.loggerClient.getStatus()
             val low = App.instance.loggerClient.dbDao.getMinTempAtDay(Date())
             val high = App.instance.loggerClient.dbDao.getMaxTempAtDay(Date())
             val oldest = App.instance.loggerClient.dbDao.getOldestEntry().getLocalString()
             val youngest = App.instance.loggerClient.dbDao.getYoungestEntry().getLocalString()
-            withContext(UI) {
+            withContext(Dispatchers.Main) {
                 tvStatus?.text = getString(R.string.status_text, status.temperature.toFloat(), low, high, status.logEntries, oldest, youngest)
             }
         }

@@ -18,7 +18,10 @@ import io.ktor.routing.routing
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import io.ktor.server.netty.NettyApplicationEngine
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import toliner.kotatu.klaxon
 import java.util.*
 
@@ -73,12 +76,14 @@ class Server(private val logger: TemperatureLogger) {
                 }
                 put("/credentials") {
                     val body = call.receiveText().lines()
-                    if (body.size < 2) call.respond(HttpStatusCode.BadRequest, "Body must have 2 lines")
-                    else if (App.instance == null) call.respond(HttpStatusCode.InternalServerError)
-                    else {
-                        App.instance?.username = body[0]
-                        App.instance?.password = body[1]
-                        call.respond(HttpStatusCode.OK)
+                    when {
+                        body.size < 2 -> call.respond(HttpStatusCode.BadRequest, "Body must have 2 lines")
+                        App.instance == null -> call.respond(HttpStatusCode.InternalServerError)
+                        else -> {
+                            App.instance?.username = body[0]
+                            App.instance?.password = body[1]
+                            call.respond(HttpStatusCode.OK)
+                        }
                     }
                 }
                 put("/log") {
@@ -92,7 +97,7 @@ class Server(private val logger: TemperatureLogger) {
                 get("{...}") { call.respond(HttpStatusCode.NotFound) }
             }
         }
-        launch {
+        GlobalScope.launch(Dispatchers.Default, CoroutineStart.DEFAULT) {
             server.start(true)
         }
     }

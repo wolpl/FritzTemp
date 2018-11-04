@@ -7,9 +7,7 @@ import android.preference.PreferenceManager
 import android.util.Log
 import com.beust.klaxon.Klaxon
 import de.wpaul.fritztempcommons.*
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.withContext
+import kotlinx.coroutines.*
 import okhttp3.MediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -41,9 +39,9 @@ class LoggerClient(context: Context) {
             sharedPreferences.edit().putString(PreferencesKeys.LastUri, v).commit()
         }
 
-    private suspend fun fetchString(uri: String? = this.uri, suffix: String): String = async {
+    private suspend fun fetchString(uri: String? = this.uri, suffix: String): String = GlobalScope.async(Dispatchers.Default, CoroutineStart.DEFAULT) {
         requireNotNull(uri) { throw IllegalArgumentException("uri must not be null") }
-        return@async URL(ServerUri(uri!!).full + suffix).readText()
+        return@async URL(ServerUri(uri).full + suffix).readText()
     }.await()
 
     suspend fun getStatusRaw(uri: String? = this.uri) = fetchString(uri, "/status")
@@ -73,13 +71,13 @@ class LoggerClient(context: Context) {
             ?: throw RuntimeException("Received bad json for config!")
 
     suspend fun setConfig(config: Config, uri: String? = this.uri) {
-        withContext(CommonPool) {
+        withContext(Dispatchers.Default) {
             setSingleConfig("interval", config.interval.toString(), uri)
             setSingleConfig("ain", config.sensor!!, uri)
         }
     }
 
-    private suspend fun setSingleConfig(key: String, value: String, uri: String? = this.uri) = async {
+    private suspend fun setSingleConfig(key: String, value: String, uri: String? = this.uri) = GlobalScope.async(Dispatchers.Default, CoroutineStart.DEFAULT) {
         val body = RequestBody.create(MediaType.parse("text"), value)
         val request = Request.Builder().url(ServerUri(uri!!, "/config/$key").full).put(body).build()
         return@async client.newCall(request).execute()

@@ -11,9 +11,7 @@ import com.jjoe64.graphview.series.DataPoint
 import com.jjoe64.graphview.series.LineGraphSeries
 import de.wpaul.fritztempcommons.plus
 import kotlinx.android.synthetic.main.fragment_chart_min_max.*
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.launch
-import kotlinx.coroutines.experimental.withContext
+import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -28,7 +26,7 @@ class ChartMinMaxFragment : androidx.fragment.app.Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        launch {
+        GlobalScope.launch(Dispatchers.Default, CoroutineStart.DEFAULT) {
             val data = App.instance.loggerClient.getMinMaxAverageAnalysis()
             val minSeries: LineGraphSeries<DataPoint> = LineGraphSeries(data.map { DataPoint(it.day, it.min.toDouble()) }.toTypedArray())
             val maxSeries: LineGraphSeries<DataPoint> = LineGraphSeries(data.map { DataPoint(it.day, it.max.toDouble()) }.toTypedArray())
@@ -38,7 +36,7 @@ class ChartMinMaxFragment : androidx.fragment.app.Fragment() {
             maxSeries.color = ContextCompat.getColor(this@ChartMinMaxFragment.context!!, R.color.colorTempMax)
             avgSeries.color = ContextCompat.getColor(this@ChartMinMaxFragment.context!!, R.color.colorTempAvg)
 
-            withContext(UI) {
+            withContext(Dispatchers.Main) {
                 with(graph_view) {
                     addSeries(minSeries)
                     addSeries(maxSeries)

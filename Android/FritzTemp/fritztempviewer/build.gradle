@@ -3,9 +3,6 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 android {
     compileSdkVersion 28
-
-
-
     defaultConfig {
         applicationId "de.wpaul.fritztempviewer"
         minSdkVersion 19
@@ -14,19 +11,14 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-
         vectorDrawables.useSupportLibrary = true
-
     }
-
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
-
 }
 
 dependencies {
@@ -47,7 +39,7 @@ dependencies {
     implementation "androidx.room:room-runtime:$roomVersion"
     kapt "androidx.room:room-compiler:$roomVersion" // use kapt for Kotlin
     testImplementation "androidx.room:room-testing:$roomVersion"
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:0.22.5'
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlinCoroutinesVersion"
     implementation "com.squareup.okhttp3:okhttp:$okHttpVersion"
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
 }

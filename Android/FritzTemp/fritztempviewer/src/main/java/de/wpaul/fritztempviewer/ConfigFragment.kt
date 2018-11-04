@@ -8,10 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import de.wpaul.fritztempcommons.Config
 import kotlinx.android.synthetic.main.fragment_config.*
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.launch
-import kotlinx.coroutines.experimental.withContext
+import kotlinx.coroutines.*
 
 class ConfigFragment : Fragment() {
 
@@ -31,8 +28,8 @@ class ConfigFragment : Fragment() {
         fetchConfig()
     }
 
-    private fun fetchConfig() = launch(UI) {
-        withContext(CommonPool) {
+    private fun fetchConfig() = GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+        withContext(Dispatchers.Default) {
             config = App.instance.loggerClient.getConfig()
         }
 
@@ -48,7 +45,7 @@ class ConfigFragment : Fragment() {
     private fun onBtnSaveClick() {
         config.sensor = etSensor.text.toString()
         config.interval = etInterval.text.toString().toLong()
-        launch(UI) {
+        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             App.instance.loggerClient.setConfig(config)
             fetchConfig()
         }
