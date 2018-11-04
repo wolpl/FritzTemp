@@ -10,4 +10,7 @@
     <item
         android:id="@+id/action_refresh_charts"
         android:title="@string/refresh_charts" />
+    <item
+        android:id="@+id/action_save_database"
+        android:title="@string/save_database_to_file" />
 </menu>

@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
-import android.util.Log
 import com.beust.klaxon.Klaxon
 import de.wpaul.fritztempcommons.*
 import kotlinx.coroutines.*
@@ -12,7 +11,6 @@ import okhttp3.MediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
-import java.io.File
 import java.net.URL
 import java.util.*
 
@@ -22,14 +20,14 @@ class LoggerClient(context: Context) {
     val dbDao: MeasurementsDao
     private var fetchedLog = false
     private val client = OkHttpClient()
+    val dbName = "Measurements.db"
 
     companion object {
         const val TAG = "LoggerClient"
     }
 
     init {
-        Log.i(TAG, File("Measurements.db").exists().toString())
-        dbDao = MeasurementsDB.create(context, "Measurements.db").measurementsDao()
+        dbDao = MeasurementsDB.create(context, dbName).measurementsDao()
     }
 
     var uri: String?

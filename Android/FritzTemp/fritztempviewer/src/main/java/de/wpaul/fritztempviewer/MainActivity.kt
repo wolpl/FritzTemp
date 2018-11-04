@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     companion object {
-        val TAG = MainActivity::class.simpleName
+        private val TAG = MainActivity::class.simpleName
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -87,6 +87,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     App.instance.loggerClient.refreshLog()
                     //TODO: refresh charts
                 }
+                true
+            }
+            R.id.action_save_database -> {
+                val target = getExternalFilesDir(null).resolve("FritzTempDB.sqlite")
+                Log.i(TAG, "Saving backup to ${target.absolutePath}")
+                getDatabasePath(App.instance.loggerClient.dbName).copyTo(target, true)
                 true
             }
             else -> super.onOptionsItemSelected(item)
