@@ -22,7 +22,6 @@ import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import toliner.kotatu.klaxon
 import java.util.*
 
 class Server(private val logger: TemperatureLogger) {

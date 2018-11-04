@@ -38,10 +38,10 @@ class TemperatureLogger(val config: SharedPreferencesConfig, val db: Measurement
 
         logTask = executor.scheduleAtFixedRate({
             try {
-                requireNotNull(config.sensor)
+                requireNotNull(config.sensor) { Log.w(TAG, "config.sensor is null!") }
                 db.measurementsDao().insert(Measurement(fritzSession.getTemperature(config.sensor!!), sensor = config.sensor))
             } catch (ex: Exception) {
-                Log.e(TAG, "Could not log new temperature!")
+                Log.e(TAG, "Could not log new temperature!", ex)
             }
         }, 0L, config.interval, TimeUnit.MILLISECONDS)
     }

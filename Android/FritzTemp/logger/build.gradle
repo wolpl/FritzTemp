@@ -35,8 +35,9 @@ dependencies {
     implementation "io.ktor:ktor-server-netty:$ktorVersion"
     implementation "io.ktor:ktor-jackson:$ktorVersion"
     implementation "com.beust:klaxon:$klaxonVersion"
-    implementation 'com.github.toliner:Kotatu-ktor-klaxon:0.1.2'
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlinCoroutinesVersion"
+    implementation "com.android.support:support-compat:$supportLibraryVersion"
+    implementation group: 'org.slf4j', name: 'slf4j-android', version: '1.7.25'
 
     implementation "androidx.room:room-runtime:$roomVersion"
     kapt "androidx.room:room-compiler:$roomVersion" // use kapt for Kotlin
