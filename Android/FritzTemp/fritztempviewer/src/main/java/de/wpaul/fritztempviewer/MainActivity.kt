@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
@@ -17,6 +18,7 @@ import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.io.File
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -90,9 +92,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 true
             }
             R.id.action_save_database -> {
-                val target = getExternalFilesDir(null).resolve("FritzTempDB.sqlite")
-                Log.i(TAG, "Saving backup to ${target.absolutePath}")
-                getDatabasePath(App.instance.loggerClient.dbName).copyTo(target, true)
+                val target = getExternalFilesDir(null)?.resolve("FritzTempDB.sqlite")
+                if (target is File) {
+                    Log.i(TAG, "Saving backup to ${target.absolutePath}")
+                    getDatabasePath(App.instance.loggerClient.dbName).copyTo(target, true)
+                    Toast.makeText(this, getString(R.string.saved_database_to_, target.absolutePath), Toast.LENGTH_LONG).show()
+                }
                 true
             }
             else -> super.onOptionsItemSelected(item)

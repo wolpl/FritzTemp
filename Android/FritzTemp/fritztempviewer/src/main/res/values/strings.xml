@@ -22,4 +22,5 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="status_text">Temperature: %.1f°C\nLowest - Highest today: %.1f°C - %.1f°C\n%d database entries\nOldest entry: %s\nYoungest entry: %s</string>
     <string name="save_database_to_file">Save database to file</string>
+    <string name="saved_database_to_">saved database to %s</string>
 </resources>

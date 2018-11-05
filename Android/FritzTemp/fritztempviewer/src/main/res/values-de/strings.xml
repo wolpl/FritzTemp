@@ -17,4 +17,6 @@
     <string name="config">Konfiguration</string>
     <string name="status">Status</string>
     <string name="status_text">Temperatur: %.1f°C\nNiedrigste - höchste heute: %.1f°C - %.1f°C\n%d Datenbankeinträge\nÄltester Eintrag: %s\nNeuester Eintrag: %s</string>
+    <string name="save_database_to_file">Datenbank in Datei speichern</string>
+    <string name="saved_database_to_">Datenbank gespeichert unter %s</string>
 </resources>
