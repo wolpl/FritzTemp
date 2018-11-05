@@ -13,10 +13,23 @@ data class Measurement(
         @ColumnInfo(name = "sensor") val sensor: String? = null,
         @PrimaryKey(autoGenerate = true) var id: Int? = null
 ) {
-    override fun toString(): String = "${SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.ROOT).format(date)};$temperature"
+    override fun toString(): String = "${SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.ROOT).format(date)};$temperature;$sensor"
     fun getLocalString(): String = "${SimpleDateFormat().format(date)}: $temperature°C"
 
     companion object {
-        fun parse(s: String) = Measurement(s.split(";")[1].toFloat(), SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.ROOT).parse(s.split(";")[0]))
+        private val dateConverter = DateConverter()
+
+        fun parse(s: String): Measurement {
+            val temperature = s.split(";")[1].toFloat()
+            val dateString = s.split(";")[0]
+            val date = try {
+                SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.ROOT).parse(dateString)
+            } catch (e: Throwable) {
+                dateConverter.toDate(dateString)
+            }
+            var sensor: String? = s.split(";")[2]
+            if (sensor.isNullOrEmpty()) sensor = null
+            return Measurement(temperature, date, sensor)
+        }
     }
 }

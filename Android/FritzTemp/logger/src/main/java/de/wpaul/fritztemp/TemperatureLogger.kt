@@ -3,6 +3,8 @@ package de.wpaul.fritztemp
 import android.util.Log
 import de.wpaul.fritztempcommons.Measurement
 import de.wpaul.fritztempcommons.MeasurementsDB
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.io.File
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
@@ -26,8 +28,11 @@ class TemperatureLogger(val config: SharedPreferencesConfig, val db: Measurement
             Log.w(TAG, "Could not fetch and log temperature!")
         }
         config.onConfigChanged += { resetInterval() }
-
         resetInterval()
+        GlobalScope.launch {
+            db.measurementsDao().deleteDuplicates()
+            Log.i(TAG, "Finished deleting duplicates")
+        }
     }
 
     fun getTemperature() = if (config.sensor != null) fritzSession.getTemperature(config.sensor!!) else null

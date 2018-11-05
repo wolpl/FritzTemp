@@ -56,4 +56,7 @@ interface MeasurementsDao {
 
     @Query("delete from measurements")
     fun deleteAll()
+
+    @Query("delete from measurements where id not in (select min(id)  from measurements group by timestamp,temperature,sensor)")
+    fun deleteDuplicates()
 }
