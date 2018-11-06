@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
+import android.util.Log
 import com.beust.klaxon.Klaxon
 import de.wpaul.fritztempcommons.*
 import kotlinx.coroutines.*
@@ -28,6 +29,12 @@ class LoggerClient(context: Context) {
 
     init {
         dbDao = MeasurementsDB.create(context, dbName).measurementsDao()
+        GlobalScope.launch {
+            dbDao.deleteDuplicates()
+            val stat = async { getStatus() }
+            val localEntries = dbDao.countAll()
+            Log.i(TAG, "$localEntries entries in local database. ${stat.await().logEntries} entries in logger database.")
+        }
     }
 
     var uri: String?
