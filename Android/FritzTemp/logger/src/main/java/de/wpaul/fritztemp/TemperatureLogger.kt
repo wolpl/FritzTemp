@@ -6,6 +6,7 @@ import de.wpaul.fritztempcommons.MeasurementsDB
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.File
+import java.util.*
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.ScheduledFuture
@@ -55,5 +56,7 @@ class TemperatureLogger(val config: SharedPreferencesConfig, val db: Measurement
         db.measurementsDao().deleteAll()
     }
 
-    fun getLogCsvString(): String = db.measurementsDao().getAll().joinToString("\n") { it.toString() }
+    fun getLogCsvString(after: Date? = null): String =
+            if (after == null) db.measurementsDao().getAll().joinToString("\n") { it.toString() }
+            else db.measurementsDao().getAllAfterDate(after).joinToString("\n") { it.toString() }
 }

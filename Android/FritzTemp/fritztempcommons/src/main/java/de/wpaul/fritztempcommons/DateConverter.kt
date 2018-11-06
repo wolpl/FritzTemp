@@ -16,6 +16,16 @@ class DateConverter {
         formatShort.parse(s)
     }
 
+    fun toDateOrNull(s: String?): Date? =
+            if (s == null)
+                null
+            else
+                try {
+                    toDate(s)
+                } catch (e: Throwable) {
+                    null
+                }
+
     @TypeConverter
     fun toString(d: Date): String = format.format(d)
 
