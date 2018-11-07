@@ -63,7 +63,7 @@ class LoggerClient(context: Context) {
     suspend fun fetchAndParseLog(uri: String? = this.uri) {
         val measurements = fetchString(uri, "/log").lines().asSequence().filter { !it.isEmpty() }
                 .map { Measurement.parse(it) }
-        dbDao.insert(measurements.toList())
+        dbDao.replaceAllData(measurements.toList(), true)
         fetchedLog = true
     }
 
