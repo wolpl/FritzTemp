@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 
 @Database(entities = [Measurement::class], version = 1, exportSchema = false)
-@TypeConverters(DateConverter::class)
+@TypeConverters(DateTimeConverter::class, DateConverter::class)
 abstract class MeasurementsDB : RoomDatabase() {
 
     abstract fun measurementsDao(): MeasurementsDao

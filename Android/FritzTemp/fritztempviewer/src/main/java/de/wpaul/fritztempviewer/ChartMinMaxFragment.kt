@@ -28,9 +28,9 @@ class ChartMinMaxFragment : androidx.fragment.app.Fragment() {
 
         GlobalScope.launch(Dispatchers.Default, CoroutineStart.DEFAULT) {
             val data = App.instance.loggerClient.getMinMaxAverageAnalysis()
-            val minSeries: LineGraphSeries<DataPoint> = LineGraphSeries(data.map { DataPoint(it.day, it.min.toDouble()) }.toTypedArray())
-            val maxSeries: LineGraphSeries<DataPoint> = LineGraphSeries(data.map { DataPoint(it.day, it.max.toDouble()) }.toTypedArray())
-            val avgSeries: LineGraphSeries<DataPoint> = LineGraphSeries(data.map { DataPoint(it.day, it.avg.toDouble()) }.toTypedArray())
+            val minSeries: LineGraphSeries<DataPoint> = LineGraphSeries(data.map { DataPoint(it.day.toOldDate(), it.min.toDouble()) }.toTypedArray())
+            val maxSeries: LineGraphSeries<DataPoint> = LineGraphSeries(data.map { DataPoint(it.day.toOldDate(), it.max.toDouble()) }.toTypedArray())
+            val avgSeries: LineGraphSeries<DataPoint> = LineGraphSeries(data.map { DataPoint(it.day.toOldDate(), it.avg.toDouble()) }.toTypedArray())
 
             minSeries.color = ContextCompat.getColor(this@ChartMinMaxFragment.context!!, R.color.colorTempMin)
             maxSeries.color = ContextCompat.getColor(this@ChartMinMaxFragment.context!!, R.color.colorTempMax)

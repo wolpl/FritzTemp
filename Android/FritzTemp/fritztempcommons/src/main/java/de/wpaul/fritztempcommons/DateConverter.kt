@@ -1,32 +1,29 @@
 package de.wpaul.fritztempcommons
 
 import androidx.room.TypeConverter
-import java.text.SimpleDateFormat
-import java.util.*
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class DateConverter {
-
-    private val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.ROOT)
-    private val formatShort = SimpleDateFormat("yyyy-MM-dd", Locale.ROOT)
+    private val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
     @TypeConverter
-    fun toDate(s: String): Date = try {
-        format.parse(s)
-    } catch (e: Throwable) {
-        formatShort.parse(s)
-    }
+    fun toDateTime(s: String): LocalDate = LocalDate.parse(s, formatter)
 
-    fun toDateOrNull(s: String?): Date? =
+    fun toDateTimeOrNull(s: String?): LocalDate? =
             if (s == null)
                 null
             else
                 try {
-                    toDate(s)
+                    toDateTime(s)
                 } catch (e: Throwable) {
                     null
                 }
 
     @TypeConverter
-    fun toString(d: Date): String = format.format(d)
+    fun toString(d: LocalDate): String = d.format(formatter)
 
+    companion object {
+        val instance = DateConverter()
+    }
 }

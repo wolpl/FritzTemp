@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_status.*
 import kotlinx.coroutines.*
-import java.util.*
+import java.time.LocalDate
 
 class StatusFragment : Fragment() {
 
@@ -22,8 +22,8 @@ class StatusFragment : Fragment() {
         GlobalScope.launch(Dispatchers.Default, CoroutineStart.DEFAULT) {
             App.instance.loggerClient.fetchAndParseLog()
             val status = App.instance.loggerClient.getStatus()
-            val low = App.instance.loggerClient.dbDao.getMinTempAtDay(Date())
-            val high = App.instance.loggerClient.dbDao.getMaxTempAtDay(Date())
+            val low = App.instance.loggerClient.dbDao.getMinTempAtDay(LocalDate.now())
+            val high = App.instance.loggerClient.dbDao.getMaxTempAtDay(LocalDate.now())
             val oldest = App.instance.loggerClient.dbDao.getOldestEntry().getLocalString()
             val youngest = App.instance.loggerClient.dbDao.getYoungestEntry().getLocalString()
             withContext(Dispatchers.Main) {

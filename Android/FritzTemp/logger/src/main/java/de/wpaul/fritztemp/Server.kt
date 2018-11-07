@@ -1,6 +1,6 @@
 package de.wpaul.fritztemp
 
-import de.wpaul.fritztempcommons.DateConverter
+import de.wpaul.fritztempcommons.DateTimeConverter
 import de.wpaul.fritztempcommons.Measurement
 import de.wpaul.fritztempcommons.Status
 import io.ktor.application.call
@@ -34,11 +34,11 @@ class Server(private val logger: TemperatureLogger) {
                     logger.config.sensor ?: "",
                     logger.config.interval,
                     logger.db.measurementsDao().countAllDistinct(),
-                    logger.db.measurementsDao().getYoungestEntry().date,
+                    logger.db.measurementsDao().getYoungestEntry().timestamp,
                     logger.getTemperature()?.toString() ?: "")
         }
     private val server: NettyApplicationEngine
-    private val dateConverter = DateConverter()
+    private val dateConverter = DateTimeConverter()
 
     init {
         server = embeddedServer(Netty, port = 8080) {
@@ -53,7 +53,7 @@ class Server(private val logger: TemperatureLogger) {
                 }
 
                 get("/log") {
-                    val date = dateConverter.toDateOrNull(call.parameters["after"])
+                    val date = dateConverter.toDateTimeOrNull(call.parameters["after"])
                     call.respond(logger.getLogCsvString(date))
                 }
                 delete("/log") {

@@ -1,6 +1,6 @@
 package de.wpaul.fritztempcommons
 
-import java.util.*
+import java.time.LocalDate
 
-data class MinMaxAvgTemperatureElement(val day: Date, val min: Float, val max: Float, val avg: Float)
+data class MinMaxAvgTemperatureElement(val day: LocalDate, val min: Float, val max: Float, val avg: Float)
 

@@ -13,14 +13,15 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
 import java.net.URL
-import java.util.*
+import java.net.URLEncoder
+import java.time.LocalDateTime
 
 class LoggerClient(context: Context) {
 
     private val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
     val dbDao: MeasurementsDao
     private val client = OkHttpClient()
-    private val dateConverter = DateConverter()
+    private val dateConverter = DateTimeConverter()
     val dbName = "Measurements.db"
 
     companion object {
@@ -59,17 +60,17 @@ class LoggerClient(context: Context) {
     }
 
     suspend fun fetchAndParseLog(uri: String? = this.uri) {
-        suspend fun fetchAfter(d: Date) {
+        suspend fun fetchAfter(d: LocalDateTime) {
             Log.v(TAG, "fetching log after $d")
-            val measurements = fetchString(uri, "/log?after=${dateConverter.toString(d)}").lines().asSequence().filter { !it.isEmpty() }
+            val measurements = fetchString(uri, "/log?after=${URLEncoder.encode(dateConverter.toString(d), "UTF-8")}").lines().asSequence().filter { !it.isEmpty() }
                     .map { Measurement.parse(it) }
             dbDao.insert(measurements.toList())
             dbDao.deleteDuplicates()
         }
 
         val status = getStatus(uri)
-        if (status.latestEntryDate > dbDao.getYoungestEntry().date) {
-            fetchAfter(dbDao.getYoungestEntry().date)
+        if (status.latestEntryDate > dbDao.getYoungestEntry().timestamp) {
+            fetchAfter(dbDao.getYoungestEntry().timestamp)
         }
         if (status.logEntries != dbDao.countAll())
             fetchAndParseWholeLog(uri)
@@ -85,7 +86,7 @@ class LoggerClient(context: Context) {
 
     suspend fun getMinMaxAverageAnalysis(uri: String? = this.uri): List<MinMaxAvgTemperatureElement> {
         getLog(uri)
-        return dbDao.getMinMaxAverageTemperatureByDaySince(Calendar.getInstance().apply { add(Calendar.MONTH, -2) }.time)
+        return dbDao.getMinMaxAverageTemperatureByDay()
     }
 
     suspend fun getConfig(uri: String? = this.uri): Config = Klaxon().parse<Config>(fetchString(uri, "/config"))

@@ -1,7 +1,7 @@
 package de.wpaul.fritztempcommons
 
 import com.beust.klaxon.Json
-import java.util.*
+import java.time.LocalDateTime
 
 data class Status(
         val running: String,
@@ -11,18 +11,10 @@ data class Status(
         @Json("latest") val latestEntryDateString: String,
         val temperature: String
 ) {
-    init {
-        requireNotNull(dateConverter.toDateOrNull(latestEntryDateString)) { throw IllegalArgumentException("String for latestEntryDate was invalid!") }
-    }
-
-    @Json
-    constructor(running: String, sensorAin: String, logInterval: Long, logEntries: Int, latestEntryDate: Date, temperature: String) :
-            this(running, sensorAin, logInterval, logEntries, dateConverter.toString(latestEntryDate), temperature)
-
-    companion object {
-        private val dateConverter = DateConverter()
-    }
+    constructor(running: String, sensorAin: String, logInterval: Long, logEntries: Int, latestEntryDate: LocalDateTime, temperature: String)
+            : this(running, sensorAin, logInterval, logEntries, DateTimeConverter.instance.toString(latestEntryDate), temperature)
 
     @Json(ignored = true)
-    val latestEntryDate = dateConverter.toDate(latestEntryDateString)
+    val latestEntryDate = DateTimeConverter.instance.toDateTimeOrNull(latestEntryDateString)
+            ?: throw IllegalArgumentException("Could not parse datetime from given string!")
 }

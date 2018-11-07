@@ -1,7 +1,8 @@
 package de.wpaul.fritztempcommons
 
 import androidx.room.*
-import java.util.*
+import java.time.LocalDate
+import java.time.LocalDateTime
 
 
 @Dao
@@ -18,17 +19,17 @@ abstract class MeasurementsDao {
 
     @Transaction
     @Query("select * from measurements where timestamp >= :d and sensor in (:sensors) order by timestamp")
-    abstract fun getAllAfterDateFromSensors(d: Date, sensors: List<String>): List<Measurement>
+    abstract fun getAllAfterDateTimeFromSensors(d: LocalDateTime, sensors: List<String>): List<Measurement>
 
     @Transaction
     @Query("select * from measurements where timestamp >= :d order by timestamp")
-    abstract fun getAllAfterDate(d: Date): List<Measurement>
+    abstract fun getAllAfterDateTime(d: LocalDateTime): List<Measurement>
 
     @Query("select min(temperature) from measurements where date(timestamp)=date(:day)")
-    abstract fun getMinTempAtDay(day: Date): Float
+    abstract fun getMinTempAtDay(day: LocalDate): Float
 
     @Query("select max(temperature) from measurements where date(timestamp)=date(:day)")
-    abstract fun getMaxTempAtDay(day: Date): Float
+    abstract fun getMaxTempAtDay(day: LocalDate): Float
 
     @Query("select * from measurements where timestamp=(select min(timestamp) from measurements)")
     abstract fun getOldestEntry(): Measurement
@@ -37,7 +38,10 @@ abstract class MeasurementsDao {
     abstract fun getYoungestEntry(): Measurement
 
     @Query("select date(timestamp) as day,min(temperature)as min,max(temperature) as max,avg(temperature) as avg from measurements where timestamp>=:earliest group by date(timestamp) order by date(timestamp)")
-    abstract fun getMinMaxAverageTemperatureByDaySince(earliest: Date): List<MinMaxAvgTemperatureElement>
+    abstract fun getMinMaxAverageTemperatureByDaySince(earliest: LocalDate): List<MinMaxAvgTemperatureElement>
+
+    @Query("select date(timestamp) as day,min(temperature)as min,max(temperature) as max,avg(temperature) as avg from measurements group by date(timestamp) order by date(timestamp)")
+    abstract fun getMinMaxAverageTemperatureByDay(): List<MinMaxAvgTemperatureElement>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun insert(vararg m: Measurement)

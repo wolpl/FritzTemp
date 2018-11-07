@@ -29,7 +29,7 @@ class ChartRawFragment : androidx.fragment.app.Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         GlobalScope.launch(Dispatchers.Default, CoroutineStart.DEFAULT) {
-            val dataPoints = App.instance.loggerClient.getLog().map { DataPoint(it.date, it.temperature.toDouble()) }.sortedBy { it.x }.toList().toTypedArray()
+            val dataPoints = App.instance.loggerClient.getLog().map { DataPoint(it.timestamp.toOldDate(), it.temperature.toDouble()) }.sortedBy { it.x }.toList().toTypedArray()
             activity?.runOnUiThread {
                 graphView.apply {
                     val series = LineGraphSeries<DataPoint>(dataPoints)

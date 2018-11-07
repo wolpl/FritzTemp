@@ -4,17 +4,17 @@ package de.wpaul.fritztempcommons
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import java.util.*
+import java.time.LocalDateTime
 
-class DateConverterTest {
+class DateTimeConverterTest {
 
-    private lateinit var c: DateConverter
-    private lateinit var d1: Date
+    private lateinit var c: DateTimeConverter
+    private lateinit var d1: LocalDateTime
 
     @Before
     fun setUp() {
-        c = DateConverter()
-        d1 = Date()
+        c = DateTimeConverter()
+        d1 = LocalDateTime.now()
     }
 
     @Test
@@ -26,7 +26,13 @@ class DateConverterTest {
     @Test
     fun `equals back conversion string`() {
         val s1 = c.toString(d1)
-        val d2 = c.toDate(s1)
+        val d2 = c.toDateTime(s1)
         assertEquals(d1, d2)
+    }
+
+    @Test
+    fun `format correctly`() {
+        d1 = LocalDateTime.of(2000, 3, 2, 10, 20, 39, 123000000)
+        assertEquals("2000-03-02 10:20:39.123", c.toString(d1))
     }
 }

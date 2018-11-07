@@ -3,29 +3,30 @@ package de.wpaul.fritztempcommons
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.text.SimpleDateFormat
-import java.util.*
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 
 @Entity(tableName = "measurements")
 data class Measurement(
         @ColumnInfo(name = "temperature") val temperature: Float,
-        @ColumnInfo(name = "timestamp", index = true) val date: Date = Calendar.getInstance().time,
+        @ColumnInfo(name = "timestamp", index = true) val timestamp: LocalDateTime = LocalDateTime.now(),
         @ColumnInfo(name = "sensor") val sensor: String? = null,
         @PrimaryKey(autoGenerate = true) var id: Int? = null
 ) {
-    override fun toString(): String = "${SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.ROOT).format(date)};$temperature;$sensor"
-    fun getLocalString(): String = "${SimpleDateFormat().format(date)}: $temperature°C"
+    override fun toString(): String = "${DateTimeConverter.instance.toString(timestamp)};$temperature;$sensor"
+    fun getLocalString(): String = "${DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM).format(timestamp)}: $temperature°C"
 
     companion object {
-        private val dateConverter = DateConverter()
+        private val dateConverter = DateTimeConverter()
 
         fun parse(s: String): Measurement {
             val temperature = s.split(";")[1].toFloat()
             val dateString = s.split(";")[0]
             val date = try {
-                SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.ROOT).parse(dateString)
+                DateTimeConverter.instance.toDateTime(dateString)
             } catch (e: Throwable) {
-                dateConverter.toDate(dateString)
+                dateConverter.toDateTime(dateString)
             }
             var sensor: String? = s.split(";")[2]
             if (sensor.isNullOrEmpty()) sensor = null
