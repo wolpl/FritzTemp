@@ -30,8 +30,12 @@ class Server(private val logger: TemperatureLogger) {
 
     private val status: Status
         get() {
-            return Status("OK", logger.config.sensor
-                    ?: "", logger.config.interval, logger.db.measurementsDao().countAllDistinct(), logger.getTemperature().toString())
+            return Status(if (logger.config.sensor == null) "Sensor not configured!" else "OK",
+                    logger.config.sensor ?: "",
+                    logger.config.interval,
+                    logger.db.measurementsDao().countAllDistinct(),
+                    logger.db.measurementsDao().getYoungestEntry().date,
+                    logger.getTemperature()?.toString() ?: "")
         }
     private val server: NettyApplicationEngine
     private val dateConverter = DateConverter()

@@ -19,8 +19,8 @@ class LoggerClient(context: Context) {
 
     private val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
     val dbDao: MeasurementsDao
-    private var fetchedLog = false
     private val client = OkHttpClient()
+    private val dateConverter = DateConverter()
     val dbName = "Measurements.db"
 
     companion object {
@@ -54,17 +54,33 @@ class LoggerClient(context: Context) {
     suspend fun getStatus(uri: String? = this.uri) = Klaxon().parse<Status>(getStatusRaw(uri))!!
 
     suspend fun getLog(uri: String? = this.uri): List<Measurement> {
-        if (!fetchedLog) {
-            fetchAndParseLog(uri)
-        }
+        fetchAndParseLog(uri)
         return dbDao.getAll()
     }
 
     suspend fun fetchAndParseLog(uri: String? = this.uri) {
+        suspend fun fetchAfter(d: Date) {
+            Log.v(TAG, "fetching log after $d")
+            val measurements = fetchString(uri, "/log?after=${dateConverter.toString(d)}").lines().asSequence().filter { !it.isEmpty() }
+                    .map { Measurement.parse(it) }
+            dbDao.insert(measurements.toList())
+            dbDao.deleteDuplicates()
+        }
+
+        val status = getStatus(uri)
+        if (status.latestEntryDate > dbDao.getYoungestEntry().date) {
+            fetchAfter(dbDao.getYoungestEntry().date)
+        }
+        if (status.logEntries != dbDao.countAll())
+            fetchAndParseWholeLog(uri)
+        else Log.v(TAG, "already had newest log. not fetching anything")
+    }
+
+    private suspend fun fetchAndParseWholeLog(uri: String? = this.uri) {
+        Log.v(TAG, "fetching whole log")
         val measurements = fetchString(uri, "/log").lines().asSequence().filter { !it.isEmpty() }
                 .map { Measurement.parse(it) }
         dbDao.replaceAllData(measurements.toList(), true)
-        fetchedLog = true
     }
 
     suspend fun getMinMaxAverageAnalysis(uri: String? = this.uri): List<MinMaxAvgTemperatureElement> {
@@ -89,7 +105,6 @@ class LoggerClient(context: Context) {
     }.await()
 
     suspend fun refreshLog(uri: String? = this.uri) {
-        dbDao.deleteAll()
-        fetchAndParseLog(uri)
+        fetchAndParseWholeLog(uri)
     }
 }
