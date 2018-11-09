@@ -30,12 +30,13 @@ class LoggerClient(context: Context) {
 
     init {
         dbDao = MeasurementsDB.create(context, dbName).measurementsDao()
-        GlobalScope.launch {
-            dbDao.deleteDuplicates()
-            val stat = async { getStatus() }
-            val localEntries = dbDao.countAll()
-            Log.i(TAG, "$localEntries entries in local database. ${stat.await().logEntries} entries in logger database.")
-        }
+        if (uri != null)
+            GlobalScope.launch {
+                dbDao.deleteDuplicates()
+                val stat = async { getStatus() }
+                val localEntries = dbDao.countAll()
+                Log.i(TAG, "$localEntries entries in local database. ${stat.await().logEntries} entries in logger database.")
+            }
     }
 
     var uri: String?
@@ -54,7 +55,7 @@ class LoggerClient(context: Context) {
 
     suspend fun getStatus(uri: String? = this.uri) = Klaxon().parse<Status>(getStatusRaw(uri))!!
 
-    suspend fun getLog(uri: String? = this.uri): List<Measurement> {
+    suspend fun getLog(uri: String? = this.uri): List<Measurement>? {
         fetchAndParseLog(uri)
         return dbDao.getAll()
     }
@@ -69,8 +70,9 @@ class LoggerClient(context: Context) {
         }
 
         val status = getStatus(uri)
-        if (status.latestEntryDate > dbDao.getYoungestEntry().timestamp) {
-            fetchAfter(dbDao.getYoungestEntry().timestamp)
+        val minDate = dbDao.getYoungestEntry()?.timestamp ?: LocalDateTime.MIN
+        if (status.latestEntryDate > minDate) {
+            fetchAfter(minDate)
         }
         if (status.logEntries != dbDao.countAll())
             fetchAndParseWholeLog(uri)
@@ -84,7 +86,7 @@ class LoggerClient(context: Context) {
         dbDao.replaceAllData(measurements.toList(), true)
     }
 
-    suspend fun getMinMaxAverageAnalysis(uri: String? = this.uri): List<MinMaxAvgTemperatureElement> {
+    suspend fun getMinMaxAverageAnalysis(uri: String? = this.uri): List<MinMaxAvgTemperatureElement>? {
         getLog(uri)
         return dbDao.getMinMaxAverageTemperatureByDay()
     }

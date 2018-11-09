@@ -8,11 +8,11 @@ data class Status(
         @Json("sensor ain") val sensorAin: String,
         @Json("interval") val logInterval: Long,
         @Json("entries") val logEntries: Int,
-        @Json("latest") val latestEntryDateString: String,
+        @Json("latest") val latestEntryDateString: String?,
         val temperature: String
 ) {
-    constructor(running: String, sensorAin: String, logInterval: Long, logEntries: Int, latestEntryDate: LocalDateTime, temperature: String)
-            : this(running, sensorAin, logInterval, logEntries, DateTimeConverter.instance.toString(latestEntryDate), temperature)
+    constructor(running: String, sensorAin: String, logInterval: Long, logEntries: Int, latestEntryDate: LocalDateTime?, temperature: String)
+            : this(running, sensorAin, logInterval, logEntries, if (latestEntryDate != null) DateTimeConverter.instance.toString(latestEntryDate) else "", temperature)
 
     @Json(ignored = true)
     val latestEntryDate = DateTimeConverter.instance.toDateTimeOrNull(latestEntryDateString)

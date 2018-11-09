@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.jjoe64.graphview.Viewport
 import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter
@@ -35,6 +36,10 @@ class ChartMinMaxFragment : androidx.fragment.app.Fragment() {
 
         GlobalScope.launch(Dispatchers.Default, CoroutineStart.DEFAULT) {
             val data = App.instance.loggerClient.getMinMaxAverageAnalysis()
+            if (data == null) {
+                withContext(Dispatchers.Main) { Toast.makeText(context, "No data available!", Toast.LENGTH_LONG).show() }
+                return@launch
+            }
             val minSeries: LineGraphSeries<DataPoint> = LineGraphSeries(data.map { DataPoint(it.day.toOldDate(), it.min.toDouble()) }.toTypedArray())
             val maxSeries: LineGraphSeries<DataPoint> = LineGraphSeries(data.map { DataPoint(it.day.toOldDate(), it.max.toDouble()) }.toTypedArray())
             val avgSeries: LineGraphSeries<DataPoint> = LineGraphSeries(data.map { DataPoint(it.day.toOldDate(), it.avg.toDouble()) }.toTypedArray())

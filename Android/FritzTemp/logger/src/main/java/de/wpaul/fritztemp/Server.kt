@@ -34,7 +34,7 @@ class Server(private val logger: TemperatureLogger) {
                     logger.config.sensor ?: "",
                     logger.config.interval,
                     logger.db.measurementsDao().countAllDistinct(),
-                    logger.db.measurementsDao().getYoungestEntry().timestamp,
+                    logger.db.measurementsDao().getYoungestEntry()?.timestamp,
                     logger.getTemperature()?.toString() ?: "")
         }
     private val server: NettyApplicationEngine

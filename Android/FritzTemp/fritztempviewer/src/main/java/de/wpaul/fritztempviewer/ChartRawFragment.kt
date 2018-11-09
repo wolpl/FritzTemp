@@ -11,10 +11,7 @@ import com.jjoe64.graphview.series.DataPoint
 import com.jjoe64.graphview.series.LineGraphSeries
 import de.wpaul.fritztempcommons.toLocalDateTime
 import kotlinx.android.synthetic.main.fragment_chart_raw.*
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
 import java.time.Duration
 import java.util.*
@@ -36,7 +33,11 @@ class ChartRawFragment : androidx.fragment.app.Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         GlobalScope.launch(Dispatchers.Default, CoroutineStart.DEFAULT) {
-            val dataPoints = App.instance.loggerClient.getLog().map { DataPoint(it.timestamp.toOldDate(), it.temperature.toDouble()) }.sortedBy { it.x }.toList().toTypedArray()
+            val dataPoints = App.instance.loggerClient.getLog()?.map { DataPoint(it.timestamp.toOldDate(), it.temperature.toDouble()) }?.sortedBy { it.x }?.toList()?.toTypedArray()
+            if (dataPoints == null) {
+                withContext(Dispatchers.Main) { Toast.makeText(context, "No data available!", Toast.LENGTH_LONG).show() }
+                return@launch
+            }
             activity?.runOnUiThread {
                 graphView.apply {
                     val series = LineGraphSeries<DataPoint>(dataPoints)

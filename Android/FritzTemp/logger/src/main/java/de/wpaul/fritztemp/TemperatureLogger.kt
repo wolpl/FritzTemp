@@ -57,6 +57,8 @@ class TemperatureLogger(val config: SharedPreferencesConfig, val db: Measurement
     }
 
     fun getLogCsvString(after: LocalDateTime? = null): String =
-            if (after == null) db.measurementsDao().getAll().joinToString("\n") { it.toString() }
-            else db.measurementsDao().getAllAfterDateTime(after).joinToString("\n") { it.toString() }
+            if (after == null) db.measurementsDao().getAll()?.joinToString("\n") { it.toString() }
+                    ?: ""
+            else db.measurementsDao().getAllAfterDateTime(after)?.joinToString("\n") { it.toString() }
+                    ?: ""
 }

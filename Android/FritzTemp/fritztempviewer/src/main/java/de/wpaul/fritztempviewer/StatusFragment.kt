@@ -24,8 +24,8 @@ class StatusFragment : Fragment() {
             val status = App.instance.loggerClient.getStatus()
             val low = App.instance.loggerClient.dbDao.getMinTempAtDay(LocalDate.now())
             val high = App.instance.loggerClient.dbDao.getMaxTempAtDay(LocalDate.now())
-            val oldest = App.instance.loggerClient.dbDao.getOldestEntry().getLocalString()
-            val youngest = App.instance.loggerClient.dbDao.getYoungestEntry().getLocalString()
+            val oldest = App.instance.loggerClient.dbDao.getOldestEntry()?.getLocalString()
+            val youngest = App.instance.loggerClient.dbDao.getYoungestEntry()?.getLocalString()
             withContext(Dispatchers.Main) {
                 tvStatus?.text = getString(R.string.status_text, status.temperature.toFloat(), low, high, status.logEntries, oldest, youngest)
             }
