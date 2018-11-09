@@ -1,5 +1,7 @@
 package de.wpaul.fritztempcommons
 
+import java.time.Instant
+import java.time.LocalDateTime
 import java.util.*
 
 fun getXmlValue(document: String, tag: String): String = document.split("<$tag>")[1].split("</$tag>")[0]
@@ -19,3 +21,5 @@ fun Date.plus(field: Int, amount: Int) = Calendar.getInstance().apply {
     time = this@plus
     this.add(field, amount)
 }.time!!
+
+fun Long.toLocalDateTime() = LocalDateTime.ofInstant(Instant.ofEpochMilli(this), TimeZone.getDefault().toZoneId())

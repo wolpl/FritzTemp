@@ -5,18 +5,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import com.jjoe64.graphview.Viewport
 import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter
 import com.jjoe64.graphview.series.DataPoint
 import com.jjoe64.graphview.series.LineGraphSeries
+import de.wpaul.fritztempcommons.toLocalDateTime
 import kotlinx.android.synthetic.main.fragment_chart_raw.*
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
+import java.time.Duration
 import java.util.*
 
 class ChartRawFragment : androidx.fragment.app.Fragment() {
+
+    private val dayMonthLabelFormatter = DateAsXAxisLabelFormatter(activity, SimpleDateFormat("dd.MM.", Locale.GERMAN))
+    private val dayMonthYearLabelFormatter = DateAsXAxisLabelFormatter(activity, SimpleDateFormat("dd.MM.yy", Locale.GERMAN))
+    private val dayMonthHourMinuteLabelFormatter = DateAsXAxisLabelFormatter(activity, SimpleDateFormat("dd.MM.\nHH:mm", Locale.GERMAN))
 
     private var temperatureToast: Toast? = null
 
@@ -41,8 +48,26 @@ class ChartRawFragment : androidx.fragment.app.Fragment() {
                     }
                     addSeries(series)
 
-                    gridLabelRenderer.labelFormatter = DateAsXAxisLabelFormatter(activity, SimpleDateFormat("dd.MM.", Locale.GERMAN))
+                    gridLabelRenderer.labelFormatter = dayMonthHourMinuteLabelFormatter
                     gridLabelRenderer.setHumanRounding(false)
+
+                    viewport.onXAxisBoundsChangedListener = Viewport.OnXAxisBoundsChangedListener { minX, maxX, _ ->
+                        val span = Duration.between(minX.toLong().toLocalDateTime(), maxX.toLong().toLocalDateTime())
+                        gridLabelRenderer.labelFormatter = when {
+                            span <= Duration.ofDays(2) -> {
+                                gridLabelRenderer.labelHorizontalHeight = 100
+                                dayMonthHourMinuteLabelFormatter
+                            }
+                            span <= Duration.ofDays(365) -> {
+                                gridLabelRenderer.labelHorizontalHeight = 50
+                                dayMonthLabelFormatter
+                            }
+                            else -> {
+                                gridLabelRenderer.labelHorizontalHeight = 100
+                                dayMonthYearLabelFormatter
+                            }
+                        }
+                    }
 
                     viewport.setScalableY(true)
                     viewport.isScalable = true
