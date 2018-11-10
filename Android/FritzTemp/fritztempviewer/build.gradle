@@ -26,7 +26,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
     implementation "androidx.appcompat:appcompat:$supportLibraryVersion"
     implementation "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"
-    implementation "com.google.android.material:material:$supportLibraryVersion"
+    implementation "com.google.android.material:material:$materialVersion"
     implementation "androidx.legacy:legacy-support-v4:$supportLibraryVersion"
     testImplementation "junit:junit:$junitVersion"
     implementation "androidx.core:core-ktx:$ktxVersion"
@@ -35,11 +35,11 @@ dependencies {
     implementation "com.beust:klaxon:$klaxonVersion"
     implementation project(path: ':fritztempcommons')
     implementation 'com.jjoe64:graphview:4.2.2'
+    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycleVersion"
 
     implementation "androidx.room:room-runtime:$roomVersion"
     kapt "androidx.room:room-compiler:$roomVersion" // use kapt for Kotlin
     testImplementation "androidx.room:room-testing:$roomVersion"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlinCoroutinesVersion"
     implementation "com.squareup.okhttp3:okhttp:$okHttpVersion"
-    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
 }

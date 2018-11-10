@@ -11,6 +11,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.transaction
+import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
@@ -26,11 +27,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         private val TAG = MainActivity::class.simpleName
     }
 
+    private lateinit var viewModel: ReportingViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
-
+        viewModel = ViewModelProviders.of(this).get(ReportingViewModel::class.java)
         val toggle = ActionBarDrawerToggle(
                 this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
         drawer_layout.addDrawerListener(toggle)
@@ -39,16 +42,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         nav_view.setNavigationItemSelectedListener(this)
 
-        if (App.instance.loggerClient.uri == null) launchSetUriActivity()
+        if (viewModel.serverUri == null) launchSetUriActivity()
 
-        title = App.instance.loggerClient.uri
+        title = viewModel.serverUri
     }
 
     override fun onResume() {
         super.onResume()
         GlobalScope.launch(Dispatchers.Default, CoroutineStart.DEFAULT) {
-            val status = App.instance.loggerClient.getStatus()
-            val entries = status.logEntries
+            val status = viewModel.status.value
+            val entries = status?.logEntries ?: 0
             runOnUiThread {
                 val infoText = nav_view.getHeaderView(0).findViewById<TextView>(R.id.navHeaderMainAdditionalInfo)
                 infoText.text = getString(R.string.nav_header_additional_info).format(entries)
@@ -86,7 +89,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
             R.id.action_refresh_charts -> {
                 GlobalScope.launch(Dispatchers.Default, CoroutineStart.DEFAULT) {
-                    App.instance.loggerClient.refreshLog()
+                    viewModel.measurementsRepo.reloadAllData()
                     //TODO: refresh charts
                 }
                 true
@@ -94,8 +97,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.action_save_database -> {
                 val target = getExternalFilesDir(null)?.resolve("FritzTempDB.sqlite")
                 if (target is File) {
-                    Log.i(TAG, "Saving backup to ${target.absolutePath}")
-                    getDatabasePath(App.instance.loggerClient.dbName).copyTo(target, true)
+                    viewModel.measurementsRepo.saveDbToFile(target)
                     Toast.makeText(this, getString(R.string.saved_database_to_, target.absolutePath), Toast.LENGTH_LONG).show()
                 }
                 true

@@ -33,8 +33,8 @@ class Server(private val logger: TemperatureLogger) {
             return Status(if (logger.config.sensor == null) "Sensor not configured!" else "OK",
                     logger.config.sensor ?: "",
                     logger.config.interval,
-                    logger.db.measurementsDao().countAllDistinct(),
-                    logger.db.measurementsDao().getYoungestEntry()?.timestamp,
+                    logger.db.measurementsDao().countAllDistinct().value ?: 0,
+                    logger.db.measurementsDao().getYoungestEntryLive().value?.timestamp,
                     logger.getTemperature()?.toString() ?: "")
         }
     private val server: NettyApplicationEngine

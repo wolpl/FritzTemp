@@ -10,13 +10,19 @@ import androidx.room.TypeConverters
 @TypeConverters(DateTimeConverter::class, DateConverter::class)
 abstract class MeasurementsDB : RoomDatabase() {
 
+    lateinit var name: String
+        private set
+
     abstract fun measurementsDao(): MeasurementsDao
 
     companion object {
-        fun create(context: Context, name: String): MeasurementsDB =
-                Room.databaseBuilder(context, MeasurementsDB::class.java, name).build()
+        private val instances = mutableMapOf<String, MeasurementsDB>()
+        fun get(context: Context, name: String): MeasurementsDB = instances[name]
+                ?: Room.databaseBuilder(context, MeasurementsDB::class.java, name).build().apply { this.name = name }
 
         fun createInMemory(context: Context): MeasurementsDB =
-                Room.inMemoryDatabaseBuilder(context, MeasurementsDB::class.java).build()
+                Room.inMemoryDatabaseBuilder(context, MeasurementsDB::class.java).build().apply { this.name = name }
+
+        fun getDefault(context: Context) = get(context, "Measurements.db")
     }
 }

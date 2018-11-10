@@ -15,10 +15,12 @@ class SetUriActivity : AppCompatActivity() {
         const val TAG = "SetUriActivity"
     }
 
+    private var loggerClient = LoggerClient(this)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_set_uri)
-        UriEditText.setText(App.instance.loggerClient.uri)
+        UriEditText.setText(loggerClient.uri)
     }
 
     fun onTestButtonClick(v: View) {
@@ -27,7 +29,7 @@ class SetUriActivity : AppCompatActivity() {
     }
 
     fun onSaveButtonClick(v: View) {
-        App.instance.loggerClient.uri = ServerUri(UriEditText.text.toString()).minimizedBase
+        loggerClient.uri = ServerUri(UriEditText.text.toString()).minimizedBase
         startActivity(Intent(this, MainActivity::class.java))
     }
 
@@ -35,7 +37,7 @@ class SetUriActivity : AppCompatActivity() {
         val uri = ServerUri(uriString)
         GlobalScope.launch(Dispatchers.Default, CoroutineStart.DEFAULT) {
             try {
-                val response = App.instance.loggerClient.getStatusRaw(uri.full)
+                val response = loggerClient.getStatusRaw(uri.full)
                 withContext(Dispatchers.Main) {
                     currentValueView.text = response
                 }

@@ -5,8 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import de.wpaul.fritztempcommons.Measurement
+import de.wpaul.fritztempcommons.Status
 import kotlinx.android.synthetic.main.fragment_status.*
-import kotlinx.coroutines.*
 import java.time.LocalDate
 
 class StatusFragment : Fragment() {
@@ -17,18 +21,29 @@ class StatusFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_status, container, false)
     }
 
+    private lateinit var viewModel: ReportingViewModel
+    private lateinit var status: LiveData<Status>
+    private lateinit var low: LiveData<Float?>
+    private lateinit var high: LiveData<Float?>
+    private lateinit var oldest: LiveData<Measurement?>
+    private lateinit var youngest: LiveData<Measurement?>
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        GlobalScope.launch(Dispatchers.Default, CoroutineStart.DEFAULT) {
-            App.instance.loggerClient.fetchAndParseLog()
-            val status = App.instance.loggerClient.getStatus()
-            val low = App.instance.loggerClient.dbDao.getMinTempAtDay(LocalDate.now())
-            val high = App.instance.loggerClient.dbDao.getMaxTempAtDay(LocalDate.now())
-            val oldest = App.instance.loggerClient.dbDao.getOldestEntry()?.getLocalString()
-            val youngest = App.instance.loggerClient.dbDao.getYoungestEntry()?.getLocalString()
-            withContext(Dispatchers.Main) {
-                tvStatus?.text = getString(R.string.status_text, status.temperature.toFloat(), low, high, status.logEntries, oldest, youngest)
-            }
+        viewModel = activity?.run { ViewModelProviders.of(this).get(ReportingViewModel::class.java) } ?: throw Exception("Invalid activity!")
+
+        status = viewModel.status
+        low = viewModel.measurementsRepo.measurementsDao.getMinTempAtDay(LocalDate.now())
+        high = viewModel.measurementsRepo.measurementsDao.getMaxTempAtDay(LocalDate.now())
+        oldest = viewModel.measurementsRepo.measurementsDao.getOldestEntry()
+        youngest = viewModel.measurementsRepo.measurementsDao.getYoungestEntryLive()
+        listOf(status, low, high, oldest, youngest).forEach { it.observe(this@StatusFragment, Observer { refreshStatusText() }) }
+        refreshStatusText()
+    }
+
+    private fun refreshStatusText() {
+        activity?.runOnUiThread {
+            tvStatus?.text = getString(R.string.status_text, status.value?.temperature?.toFloat(), low.value, high.value, status.value?.logEntries, oldest.value?.getLocalString(), youngest.value?.getLocalString())
         }
     }
 }

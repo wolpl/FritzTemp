@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.lifecycle.ViewModelProviders
 import com.jjoe64.graphview.Viewport
 import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter
 import com.jjoe64.graphview.series.DataPoint
@@ -23,6 +24,7 @@ class ChartRawFragment : androidx.fragment.app.Fragment() {
     private val dayMonthHourMinuteLabelFormatter = DateAsXAxisLabelFormatter(activity, SimpleDateFormat("dd.MM.\nHH:mm", Locale.GERMAN))
 
     private var temperatureToast: Toast? = null
+    private lateinit var viewModel: ReportingViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -32,8 +34,9 @@ class ChartRawFragment : androidx.fragment.app.Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        viewModel = activity?.run { ViewModelProviders.of(this).get(ReportingViewModel::class.java) } ?: throw Exception("Invalid activity!")
         GlobalScope.launch(Dispatchers.Default, CoroutineStart.DEFAULT) {
-            val dataPoints = App.instance.loggerClient.getLog()?.map { DataPoint(it.timestamp.toOldDate(), it.temperature.toDouble()) }?.sortedBy { it.x }?.toList()?.toTypedArray()
+            val dataPoints = viewModel.measurementsRepo.measurementsDao.getAll()?.map { DataPoint(it.timestamp.toOldDate(), it.temperature.toDouble()) }?.sortedBy { it.x }?.toList()?.toTypedArray()
             if (dataPoints == null) {
                 withContext(Dispatchers.Main) { Toast.makeText(context, "No data available!", Toast.LENGTH_LONG).show() }
                 return@launch
