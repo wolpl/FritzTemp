@@ -2,23 +2,19 @@ package de.wpaul.fritztempviewer
 
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProviders
-import com.jjoe64.graphview.Viewport
-import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter
 import com.jjoe64.graphview.series.DataPoint
 import com.jjoe64.graphview.series.LineGraphSeries
 import de.wpaul.fritztempcommons.plus
-import de.wpaul.fritztempcommons.toLocalDateTime
 import kotlinx.android.synthetic.main.fragment_chart_min_max.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.time.Duration
+import kotlinx.coroutines.withContext
 import java.util.*
 
 class ChartMinMaxFragment : androidx.fragment.app.Fragment() {
@@ -27,9 +23,6 @@ class ChartMinMaxFragment : androidx.fragment.app.Fragment() {
         private val TAG = ChartMinMaxFragment::class.simpleName
     }
 
-    private val dayMonthLabelFormatter = DateAsXAxisLabelFormatter(activity, SimpleDateFormat("dd.MM.", Locale.GERMAN))
-    private val dayMonthYearLabelFormatter = DateAsXAxisLabelFormatter(activity, SimpleDateFormat("dd.MM.yy", Locale.GERMAN))
-    private val dayMonthHourMinuteLabelFormatter = DateAsXAxisLabelFormatter(activity, SimpleDateFormat("dd.MM.\nHH:mm", Locale.GERMAN))
     private lateinit var viewModel: ReportingViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -48,8 +41,8 @@ class ChartMinMaxFragment : androidx.fragment.app.Fragment() {
 
         GlobalScope.launch {
             val data = viewModel.measurementsRepo.measurementsDao.getMinMaxAverageTemperatureByDay()
-            activity?.runOnUiThread {
-                if (data == null) return@runOnUiThread
+            withContext(Dispatchers.Main) {
+                if (data == null || context == null) return@withContext
                 val minSeries = LineGraphSeries(data.map { DataPoint(it.day.toOldDate(), it.min.toDouble()) }.toTypedArray())
                 val maxSeries = LineGraphSeries(data.map { DataPoint(it.day.toOldDate(), it.max.toDouble()) }.toTypedArray())
                 val avgSeries = LineGraphSeries(data.map { DataPoint(it.day.toOldDate(), it.avg.toDouble()) }.toTypedArray())
@@ -58,45 +51,15 @@ class ChartMinMaxFragment : androidx.fragment.app.Fragment() {
                 maxSeries.color = ContextCompat.getColor(this@ChartMinMaxFragment.context!!, R.color.colorTempMax)
                 avgSeries.color = ContextCompat.getColor(this@ChartMinMaxFragment.context!!, R.color.colorTempAvg)
 
-                if (graph_view == null) {
-                    Log.w(TAG, "graph_view was null!")
-                    return@runOnUiThread
-                }
-
                 with(graph_view) {
+                    viewport.setMaxX(Date().time.toDouble())
+                    viewport.setMinX(Date().plus(Calendar.MONTH, -1).time.toDouble())
+
                     addSeries(minSeries)
                     addSeries(maxSeries)
                     addSeries(avgSeries)
-
-                    viewport.isScrollable = true
-                    gridLabelRenderer.labelFormatter = dayMonthHourMinuteLabelFormatter
-                    gridLabelRenderer.setHumanRounding(false)
-                    viewport.setScalableY(true)
-                    viewport.isScalable = true
-
-                    viewport.onXAxisBoundsChangedListener = Viewport.OnXAxisBoundsChangedListener { minX, maxX, _ ->
-                        val span = Duration.between(minX.toLong().toLocalDateTime(), maxX.toLong().toLocalDateTime())
-                        gridLabelRenderer.labelFormatter = when {
-                            span <= Duration.ofDays(2) -> {
-                                gridLabelRenderer.labelHorizontalHeight = 100
-                                dayMonthHourMinuteLabelFormatter
-                            }
-                            span <= Duration.ofDays(365) -> {
-                                gridLabelRenderer.labelHorizontalHeight = 50
-                                dayMonthLabelFormatter
-                            }
-                            else -> {
-                                gridLabelRenderer.labelHorizontalHeight = 100
-                                dayMonthYearLabelFormatter
-                            }
-                        }
-                    }
-                    viewport.setMinX(Date().plus(Calendar.MONTH, -1).time.toDouble())
                 }
             }
-
         }
-
-
     }
 }

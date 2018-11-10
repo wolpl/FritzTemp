@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".ChartMinMaxFragment">
 
-    <com.jjoe64.graphview.GraphView
+    <de.wpaul.fritztempviewer.DateTimeGraphView
         android:id="@+id/graph_view"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
