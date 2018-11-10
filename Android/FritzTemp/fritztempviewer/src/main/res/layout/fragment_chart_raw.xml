@@ -8,7 +8,7 @@
     tools:context=".MainActivity"
     tools:showIn="@layout/app_bar_main">
 
-    <com.jjoe64.graphview.GraphView
+    <de.wpaul.fritztempviewer.DateTimeGraphView
         android:id="@+id/graphView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
