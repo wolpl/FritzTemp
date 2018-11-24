@@ -2,9 +2,9 @@
 
 buildscript {
     ext {
-        kotlinVersion = '1.3.0'
+        kotlinVersion = '1.3.10'
         kotlinCoroutinesVersion = '1.0.0'
-        ktorVersion = '1.0.0-beta-3'
+        ktorVersion = '1.0.0'
         roomVersion = '2.1.0-alpha02'
         klaxonVersion = '3.0.1'
         okHttpVersion = '3.10.0'

@@ -16,5 +16,5 @@ data class Status(
 
     @Json(ignored = true)
     val latestEntryDate = DateTimeConverter.instance.toDateTimeOrNull(latestEntryDateString)
-            ?: throw IllegalArgumentException("Could not parse datetime from given string!")
+            ?: throw IllegalArgumentException("Could not parse datetime from given string \"$latestEntryDateString\"")
 }
