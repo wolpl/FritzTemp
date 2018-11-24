@@ -5,6 +5,7 @@ import de.wpaul.fritztempcommons.Measurement
 import de.wpaul.fritztempcommons.Status
 import io.ktor.application.call
 import io.ktor.application.install
+import io.ktor.features.CallLogging
 import io.ktor.features.ContentNegotiation
 import io.ktor.features.StatusPages
 import io.ktor.http.HttpStatusCode
@@ -23,6 +24,7 @@ import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import org.slf4j.event.Level
 import toliner.kotatu.klaxon
 import java.util.*
 
@@ -50,6 +52,9 @@ class Server(private val logger: TemperatureLogger) {
                     status(HttpStatusCode.NotFound) {
                         call.respond(HttpStatusCode.NotFound, "Error 404: Not Found")
                     }
+                }
+                install(CallLogging) {
+                    level = Level.INFO
                 }
 
                 get("/log") {
