@@ -17,8 +17,16 @@ class DateTimeGraphView(context: Context, attrs: AttributeSet) : GraphView(conte
     private val dayMonthHourMinuteLabelFormatter = DateAsXAxisLabelFormatter(context, SimpleDateFormat("dd.MM.\nHH:mm", Locale.GERMAN))
 
     init {
+        with(gridLabelRenderer) {
+            setHumanRounding(false)
+            labelFormatter = dayMonthLabelFormatter
+            labelHorizontalHeight = 50
+            numVerticalLabels = 5
+        }
+
         with(viewport) {
             isXAxisBoundsManual = true
+            isScrollable = true
             isScalable = true
             onXAxisBoundsChangedListener = Viewport.OnXAxisBoundsChangedListener { minX, maxX, _ ->
                 val span = Duration.between(minX.toLong().toLocalDateTime(), maxX.toLong().toLocalDateTime())
@@ -37,11 +45,6 @@ class DateTimeGraphView(context: Context, attrs: AttributeSet) : GraphView(conte
                     }
                 }
             }
-        }
-
-        with(gridLabelRenderer) {
-            setHumanRounding(false)
-            labelFormatter = dayMonthLabelFormatter
         }
     }
 }

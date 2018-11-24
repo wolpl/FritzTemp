@@ -41,16 +41,17 @@ class ChartMinMaxFragment : androidx.fragment.app.Fragment() {
 
         GlobalScope.launch {
             val data = viewModel.measurementsRepo.measurementsDao.getMinMaxAverageTemperatureByDay()
+
+            if (data == null || context == null) return@launch
+            val minSeries = LineGraphSeries(data.map { DataPoint(it.day.toOldDate(), it.min.toDouble()) }.toTypedArray())
+            val maxSeries = LineGraphSeries(data.map { DataPoint(it.day.toOldDate(), it.max.toDouble()) }.toTypedArray())
+            val avgSeries = LineGraphSeries(data.map { DataPoint(it.day.toOldDate(), it.avg.toDouble()) }.toTypedArray())
+
+            minSeries.color = ContextCompat.getColor(this@ChartMinMaxFragment.context!!, R.color.colorTempMin)
+            maxSeries.color = ContextCompat.getColor(this@ChartMinMaxFragment.context!!, R.color.colorTempMax)
+            avgSeries.color = ContextCompat.getColor(this@ChartMinMaxFragment.context!!, R.color.colorTempAvg)
+
             withContext(Dispatchers.Main) {
-                if (data == null || context == null) return@withContext
-                val minSeries = LineGraphSeries(data.map { DataPoint(it.day.toOldDate(), it.min.toDouble()) }.toTypedArray())
-                val maxSeries = LineGraphSeries(data.map { DataPoint(it.day.toOldDate(), it.max.toDouble()) }.toTypedArray())
-                val avgSeries = LineGraphSeries(data.map { DataPoint(it.day.toOldDate(), it.avg.toDouble()) }.toTypedArray())
-
-                minSeries.color = ContextCompat.getColor(this@ChartMinMaxFragment.context!!, R.color.colorTempMin)
-                maxSeries.color = ContextCompat.getColor(this@ChartMinMaxFragment.context!!, R.color.colorTempMax)
-                avgSeries.color = ContextCompat.getColor(this@ChartMinMaxFragment.context!!, R.color.colorTempAvg)
-
                 with(graph_view) {
                     viewport.setMaxX(Date().time.toDouble())
                     viewport.setMinX(Date().plus(Calendar.MONTH, -1).time.toDouble())
