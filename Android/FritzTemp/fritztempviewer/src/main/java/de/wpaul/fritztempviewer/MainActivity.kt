@@ -11,6 +11,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.transaction
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
@@ -49,14 +50,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onResume() {
         super.onResume()
-        GlobalScope.launch(Dispatchers.Default, CoroutineStart.DEFAULT) {
-            val status = viewModel.status.value
-            val entries = status?.logEntries ?: 0
+        viewModel.status.observe(this@MainActivity, Observer {
             runOnUiThread {
                 val infoText = nav_view.getHeaderView(0).findViewById<TextView>(R.id.navHeaderMainAdditionalInfo)
-                infoText.text = getString(R.string.nav_header_additional_info).format(entries)
+                infoText.text = getString(R.string.nav_header_additional_info).format(viewModel.status.value?.logEntries
+                        ?: -1)
             }
-        }
+        })
     }
 
     private fun launchSetUriActivity() {
