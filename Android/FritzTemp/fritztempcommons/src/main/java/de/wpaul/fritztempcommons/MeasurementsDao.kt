@@ -60,7 +60,10 @@ abstract class MeasurementsDao {
     abstract fun countAll(): Int
 
     @Query("select distinct count(*) from measurements")
-    abstract fun countAllDistinct(): LiveData<Int>
+    abstract fun countAllDistinctLive(): LiveData<Int>
+
+    @Query("select distinct count(*) from measurements")
+    abstract fun countAllDistinct(): Int
 
     @Query("select avg(temperature) from measurements")
     abstract fun getAverageTemperature(): LiveData<Float?>
