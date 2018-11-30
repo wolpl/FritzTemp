@@ -27,6 +27,7 @@ class MeasurementsRepository(val app: Application) {
                     delay(20000)
                 } catch (e: Throwable) {
                     Log.w(TAG, "Error while trying to update log!", e)
+                    delay(5000)
                 }
             }
         }
