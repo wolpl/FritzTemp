@@ -3,14 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_settings"
+        android:icon="@drawable/ic_settings_black_24dp"
         android:orderInCategory="100"
         android:title="@string/action_settings"
-        app:showAsAction="never" />
+        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/action_refresh_charts"
-        android:title="@string/refresh_charts" />
+        android:icon="@drawable/ic_refresh_black_24dp"
+        android:title="@string/refresh_charts"
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_save_database"
-        android:title="@string/save_database_to_file" />
+        android:icon="@drawable/ic_sim_card_black_24dp"
+        android:title="@string/save_database_to_file"
+        app:showAsAction="ifRoom" />
 </menu>
