@@ -35,13 +35,14 @@ class ConfigFragment : Fragment() {
         fetchConfig()
     }
 
-    private fun fetchConfig() = GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-        withContext(Dispatchers.Default) {
-            config = viewModel.getConfig()
-        }
+    private fun fetchConfig() = GlobalScope.launch {
+        config = viewModel.getConfig()
 
-        etInterval.setText(config.interval.toString())
-        etSensor.setText(config.sensor)
+        withContext(Dispatchers.Main) {
+            if (etInterval == null) return@withContext
+            etInterval.setText(config.interval.toString())
+            etSensor.setText(config.sensor)
+        }
     }
 
 

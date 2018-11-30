@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.transaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -29,6 +30,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private lateinit var viewModel: ReportingViewModel
+    private var navItem: Int = R.id.nav_status
+    private val navFragments = mapOf(
+            R.id.nav_status to { StatusFragment() },
+            R.id.nav_raw_chart to { ChartRawFragment() },
+            R.id.nav_min_max_chart to { ChartMinMaxFragment() },
+            R.id.nav_config to { ConfigFragment() }
+    )
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +48,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
-        setContentFragment(StatusFragment())
+        navItem = savedInstanceState?.getInt("NavItem") ?: R.id.nav_status
+        setContentFragment(navFragments[navItem]!!.invoke())
 
         nav_view.setNavigationItemSelectedListener(this)
 
@@ -57,6 +67,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         ?: -1)
             }
         })
+    }
+
+    override fun onSaveInstanceState(outState: Bundle?) {
+        super.onSaveInstanceState(outState)
+        if (outState == null) {
+            Log.w(TAG, "outBundle was null! Could not save instance state!")
+            return
+        }
+        outState.putInt("NavItem", navItem)
     }
 
     private fun launchSetUriActivity() {
@@ -108,29 +127,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         // Handle navigation view item clicks here.
-        when (item.itemId) {
-            R.id.nav_status -> {
-                setContentFragment(StatusFragment())
-            }
-            R.id.nav_raw_chart -> {
-                //if (fragment_container.targetFragment !is ChartRawFragment)
-                setContentFragment(ChartRawFragment())
-            }
-            R.id.nav_min_max_chart -> {
-                //if (fragment_container.targetFragment !is ChartMinMaxFragment)
-                setContentFragment(ChartMinMaxFragment())
-            }
-            R.id.nav_config -> {
-                setContentFragment(ConfigFragment())
-            }
-            else -> Log.w(TAG, "Unknown navigation item selected: ${item.title}")
+        val fragment = navFragments[item.itemId]?.invoke()
+        if (fragment is Fragment) {
+            navItem = item.itemId
+            setContentFragment(fragment)
+        } else {
+            Log.w(TAG, "Could not find fragment for selected navigation item ${item.title}")
         }
 
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
     }
 
-    private fun setContentFragment(f: androidx.fragment.app.Fragment) {
+    private fun setContentFragment(f: Fragment) {
         supportFragmentManager.transaction {
             replace(R.id.fragment_container, f)
             //addToBackStack(null)
