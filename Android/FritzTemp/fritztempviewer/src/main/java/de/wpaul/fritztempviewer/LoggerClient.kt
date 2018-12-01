@@ -23,7 +23,7 @@ class LoggerClient(context: Context) {
 
     var uri: String? by ExternalSharedPreferencesProperty(context, PreferencesKeys.LastUri)
 
-    private suspend fun fetchString(uri: String? = this.uri, suffix: String): String = GlobalScope.async(Dispatchers.Default, CoroutineStart.DEFAULT) {
+    private suspend fun fetchString(uri: String? = this.uri, suffix: String): String = GlobalScope.async(Dispatchers.IO, CoroutineStart.DEFAULT) {
         requireNotNull(uri) { throw IllegalArgumentException("uri must not be null") }
         return@async URL(ServerUri(uri).full + suffix).readText()
     }.await()
@@ -53,15 +53,15 @@ class LoggerClient(context: Context) {
             ?: throw RuntimeException("Received bad json for config!")
 
     suspend fun setConfig(config: Config, uri: String? = this.uri) {
-        withContext(Dispatchers.Default) {
+        withContext(Dispatchers.IO) {
             setSingleConfig("interval", config.interval.toString(), uri)
             setSingleConfig("ain", config.sensor!!, uri)
         }
     }
 
-    private suspend fun setSingleConfig(key: String, value: String, uri: String? = this.uri) = GlobalScope.async(Dispatchers.Default, CoroutineStart.DEFAULT) {
+    private suspend fun setSingleConfig(key: String, value: String, uri: String? = this.uri) = withContext(Dispatchers.IO) {
         val body = RequestBody.create(MediaType.parse("text"), value)
         val request = Request.Builder().url(ServerUri(uri!!, "/config/$key").full).put(body).build()
-        return@async client.newCall(request).execute()
-    }.await()
+        return@withContext client.newCall(request).execute()
+    }
 }

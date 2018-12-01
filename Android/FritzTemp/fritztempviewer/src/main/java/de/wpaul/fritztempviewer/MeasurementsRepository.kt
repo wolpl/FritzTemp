@@ -33,7 +33,7 @@ class MeasurementsRepository(val app: Application) {
         }
     }
 
-    private suspend fun <T> accessDao(operation: (MeasurementsDao) -> T) = withContext(Dispatchers.Default) {
+    private suspend fun <T> accessDao(operation: (MeasurementsDao) -> T) = withContext(Dispatchers.IO) {
         operation(measurementsDao)
     }
 
@@ -53,7 +53,7 @@ class MeasurementsRepository(val app: Application) {
         else Log.v(TAG, "already had newest log. not fetching anything")
     }
 
-    fun reloadAllData() = GlobalScope.launch {
+    fun reloadAllData() = GlobalScope.launch(Dispatchers.IO) {
         measurementsDao.replaceAllData(loggerClient.getLog())
     }
 }

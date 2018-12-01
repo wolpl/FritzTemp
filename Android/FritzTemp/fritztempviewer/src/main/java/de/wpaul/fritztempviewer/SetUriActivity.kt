@@ -23,19 +23,19 @@ class SetUriActivity : AppCompatActivity() {
         UriEditText.setText(loggerClient.uri)
     }
 
-    fun onTestButtonClick(v: View) {
+    fun onTestButtonClick(@Suppress("UNUSED_PARAMETER") v: View) {
         val uriString = UriEditText.text.toString()
         testUri(uriString)
     }
 
-    fun onSaveButtonClick(v: View) {
+    fun onSaveButtonClick(@Suppress("UNUSED_PARAMETER") v: View) {
         loggerClient.uri = ServerUri(UriEditText.text.toString()).minimizedBase
         startActivity(Intent(this, MainActivity::class.java))
     }
 
     private fun testUri(uriString: String) {
         val uri = ServerUri(uriString)
-        GlobalScope.launch(Dispatchers.Default, CoroutineStart.DEFAULT) {
+        GlobalScope.launch(Dispatchers.IO, CoroutineStart.DEFAULT) {
             try {
                 val response = loggerClient.getStatusRaw(uri.full)
                 withContext(Dispatchers.Main) {
