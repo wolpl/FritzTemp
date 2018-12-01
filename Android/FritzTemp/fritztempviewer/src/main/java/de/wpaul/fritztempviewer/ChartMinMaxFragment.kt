@@ -19,10 +19,6 @@ import java.util.*
 
 class ChartMinMaxFragment : androidx.fragment.app.Fragment() {
 
-    companion object {
-        private val TAG = ChartMinMaxFragment::class.simpleName
-    }
-
     private lateinit var viewModel: ReportingViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

@@ -22,4 +22,4 @@ fun Date.plus(field: Int, amount: Int) = Calendar.getInstance().apply {
     this.add(field, amount)
 }.time!!
 
-fun Long.toLocalDateTime() = LocalDateTime.ofInstant(Instant.ofEpochMilli(this), TimeZone.getDefault().toZoneId())
+fun Long.toLocalDateTime() = LocalDateTime.ofInstant(Instant.ofEpochMilli(this), TimeZone.getDefault().toZoneId())!!

@@ -20,7 +20,7 @@ class SharedPreferencesProperty(private val key: String, private val commit: Boo
     }
 }
 
-class ExternalSharedPreferencesProperty(private val context: Context, protected val key: String, protected val commit: Boolean = true) : ReadWriteProperty<Any, String?> {
+class ExternalSharedPreferencesProperty(private val context: Context, private val key: String, private val commit: Boolean = true) : ReadWriteProperty<Any, String?> {
     override fun getValue(thisRef: Any, property: KProperty<*>): String? {
         return PreferenceManager.getDefaultSharedPreferences(context).getString(key, null)
     }

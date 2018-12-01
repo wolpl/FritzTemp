@@ -20,6 +20,7 @@ abstract class MeasurementsDB : RoomDatabase() {
         fun get(context: Context, name: String): MeasurementsDB = instances[name]
                 ?: Room.databaseBuilder(context, MeasurementsDB::class.java, name).build().apply { this.name = name }
 
+        @Suppress("unused")
         fun createInMemory(context: Context): MeasurementsDB =
                 Room.inMemoryDatabaseBuilder(context, MeasurementsDB::class.java).build().apply { this.name = name }
 

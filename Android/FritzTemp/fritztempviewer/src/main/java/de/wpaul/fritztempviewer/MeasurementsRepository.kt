@@ -3,7 +3,6 @@ package de.wpaul.fritztempviewer
 import android.app.Application
 import android.util.Log
 import de.wpaul.fritztempcommons.MeasurementsDB
-import de.wpaul.fritztempcommons.MeasurementsDao
 import kotlinx.coroutines.*
 import java.io.File
 import java.time.LocalDateTime
@@ -31,10 +30,6 @@ class MeasurementsRepository(val app: Application) {
                 }
             }
         }
-    }
-
-    private suspend fun <T> accessDao(operation: (MeasurementsDao) -> T) = withContext(Dispatchers.IO) {
-        operation(measurementsDao)
     }
 
     fun saveDbToFile(file: File, overwrite: Boolean = true) {

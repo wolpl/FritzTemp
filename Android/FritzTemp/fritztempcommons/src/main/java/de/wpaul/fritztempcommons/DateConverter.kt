@@ -10,6 +10,7 @@ class DateConverter {
     @TypeConverter
     fun toDateTime(s: String): LocalDate = LocalDate.parse(s, formatter)
 
+    @Suppress("unused")
     fun toDateTimeOrNull(s: String?): LocalDate? =
             if (s == null)
                 null

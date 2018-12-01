@@ -10,7 +10,6 @@ class SharedPreferencesConfig(
 ) : Config(sensor, interval) {
 
     companion object {
-        private val TAG = SharedPreferencesConfig::class.simpleName
         private const val AIN = "ain"
         private const val INTERVAL = "interval"
     }
