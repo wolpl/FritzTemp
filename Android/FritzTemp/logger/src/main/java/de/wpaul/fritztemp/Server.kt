@@ -52,6 +52,10 @@ class Server(private val logger: TemperatureLogger) {
                     status(HttpStatusCode.NotFound) {
                         call.respond(HttpStatusCode.NotFound, "Error 404: Not Found")
                     }
+                    exception<Throwable> { cause ->
+                        call.respond(HttpStatusCode.InternalServerError, cause)
+                        throw cause
+                    }
                 }
                 install(CallLogging) {
                     level = Level.INFO
