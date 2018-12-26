@@ -1,6 +1,7 @@
 package de.wpaul.fritztemp
 
 import android.util.Log
+import com.github.wolpl.fritzahaclient.FritzSession
 import de.wpaul.fritztempcommons.Measurement
 import de.wpaul.fritztempcommons.MeasurementsDB
 import kotlinx.coroutines.GlobalScope
@@ -20,7 +21,7 @@ class TemperatureLogger(val config: SharedPreferencesConfig, val db: Measurement
     }
 
     private lateinit var logTask: ScheduledFuture<*>
-    private val fritzSession: FritzSession = FritzSession()
+    private val fritzSession: FritzSession = FritzSession(App.instance!!.username, App.instance!!.password)
 
     init {
         try {

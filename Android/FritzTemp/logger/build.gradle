@@ -38,6 +38,7 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlinCoroutinesVersion"
     implementation group: 'org.slf4j', name: 'slf4j-android', version: '1.7.25'
     implementation 'com.github.wolpl:Kotatu-ktor-klaxon:0.1.4'
+    implementation 'com.github.wolpl:FritzAhaClient:0.1.0'
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycleVersion"
 
     implementation "androidx.room:room-runtime:$roomVersion"
